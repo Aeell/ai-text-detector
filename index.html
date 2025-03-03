@@ -64,9 +64,9 @@
       const repetitionScore = (wordCount - uniqueWords) / wordCount;
 
       let aiScore = 0;
-      if (avgSentenceLength < 12 && avgSentenceLength > 0) aiScore += 40; // AI tends to use shorter sentences
-      if (repetitionScore < 0.2) aiScore += 30; // Low repetition is common in AI text
-      if (text.length > 100 && sentences.length < 5) aiScore += 30; // AI avoids long paragraphs
+      if (avgSentenceLength < 12 && avgSentenceLength > 0) aiScore += 25; // AI tends to use shorter sentences
+      if (repetitionScore < 0.2) aiScore += 20; // Low repetition is common in AI text
+      if (text.length > 100 && sentences.length < 5) aiScore += 25; // AI avoids long paragraphs
 
       const finalScore = Math.min(aiScore, 100);
       const resultText = finalScore > 50 ? "Likely AI-generated" : "Likely human-written";
