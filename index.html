@@ -75,7 +75,7 @@
       // Adjusted weights to target 60-70% for Grok-style text
       if (avgSentenceLength > 8 && avgSentenceLength < 14) aiScore += 25; // Grok uses moderate sentence lengths
       if (repetitionScore < 0.25) aiScore += 20; // Low repetition in polished AI text
-      if (sentenceLengthVariance < 15) aiScore += 20; // Consistent lengths are AI-like
+      if (sentenceLengthVariance < 10) aiScore += 20; // Consistent lengths are AI-like
       if (text.includes("for example") || text.includes("in conclusion")) aiScore += 15; // Common AI structuring phrases
       if (wordCount > 50 && sentences.length < 10) aiScore += 10; // Concise paragraphing
 
