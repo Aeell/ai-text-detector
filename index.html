@@ -68,6 +68,7 @@
     a { color: #007BFF; text-decoration: none; }
     .lang-toggle { position: absolute; top: 10px; right: 10px; }
     .theme-banner { max-width: 900px; margin: 0 auto 20px; background: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 5px; color: #00cc00; font-size: 1.2em; text-shadow: 1px 1px 2px #000; }
+    .sidebar-content { background: rgba(0, 100, 0, 0.7); padding: 10px; border-radius: 5px; color: white; margin-top: 10px; }
     @media (max-width: 768px) {
       .container { flex-direction: column; }
       .sidebar { margin-left: 0; margin-top: 20px; }
@@ -82,10 +83,10 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WSQH2CZC"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
-  <div class="theme-banner" id="bannerText">Catch AI Cheaters in Seconds!</div>
+  <div class="theme-banner">Catch AI Cheaters in Seconds!</div>
   <header>
-    <h1 id="title">AI Homework Detector</h1>
-    <p id="subtitle">For Teachers, Parents, and Honest Students</p>
+    <h1>AI Homework Detector</h1>
+    <p>For Teachers, Parents, and Honest Students</p>
     <div class="lang-toggle">
       <select onchange="switchLang(this.value)">
         <option value="ENG">ENG</option>
@@ -100,15 +101,15 @@
   </header>
   <div class="container">
     <div class="main">
-      <p id="prompt">Paste student text to detect AI-generated homework.</p>
+      <p>Paste student text to detect AI-generated homework.</p>
       <textarea id="inputText" placeholder="Paste text here (e.g., homework, essays)..."></textarea>
       <textarea id="compareText" placeholder="Paste second text to compare..."></textarea>
       <br>
-      <button onclick="detectAI()" id="analyzeBtn">Analyze Text</button>
-      <button onclick="compareTexts()" id="compareBtn">Compare Texts</button>
-      <button onclick="exportResults()" id="exportBtn">Export Results</button>
-      <button onclick="shareOnX()" id="shareBtn">Share: 𝕏</button>
-      <button onclick="clearText()" id="clearBtn">Clear</button>
+      <button onclick="detectAI()">Analyze Text</button>
+      <button onclick="compareTexts()">Compare Texts</button>
+      <button onclick="exportResults()">Export Results</button>
+      <button onclick="shareOnX()">Share: 𝕏</button>
+      <button onclick="clearText()">Clear</button>
       <div id="result"></div>
       <div id="compareResult"></div>
       <div id="wordCount"></div>
@@ -117,13 +118,15 @@
       <div id="readability"></div>
     </div>
     <aside class="sidebar">
-      <h3 id="tipsTitle">Tips for Teachers</h3>
-      <p id="tipsText" style="font-size: 14px;">AI text often has uniform sentences, polished phrasing, and overused transitions like "in conclusion".</p>
-      <a href="blog.html" style="display: block; margin-top: 10px;">Read Our Blog</a>
+      <h3>Tips for Teachers</h3>
+      <div class="sidebar-content">
+        <p>AI text often has uniform sentences, polished phrasing, and overused transitions like "in conclusion".</p>
+        <p>Read our <a href="blog.html">Blog</a>.</p>
+      </div>
     </aside>
   </div>
   <footer>
-    <p id="footerText">Built to promote honest work | <a href="mailto:your-email@example.com">Contact Us</a></p>
+    <p>Built to promote honest work | <a href="mailto:your-email@example.com">Contact Us</a></p>
   </footer>
 
   <script>
@@ -186,7 +189,7 @@
         tipsText: "Los textos de IA suelen tener oraciones uniformes, frases pulidas y transiciones sobre utilizadas como 'en conclusión'.",
         footer: "Creado para promover el trabajo honesto | <a href='mailto:your-email@example.com'>Contáctenos</a>",
         noText: "Por favor, ingrese un texto para analizar.", aiLabel: "Probabilidad de IA:", likelyAI: "Probablemente generado por IA",
-        likelyHuman: "Probablemente escrito por humanos", compareResult: "Comparación: Texto 1 - {score1}%, Texto 2 - {score2}%",
+        likelyHuman: "Probablemente escrito por humanos", compareResult: "Comparación: Texto 1 - {score1}%, Text 2 - {score2}%",
         wordCount: "Conteo de palabras: {count}", repeatWords: "Palabras repetidas: {list}", sentenceCount: "Conteo de frases: {count}",
         readability: "Legibilidad (Flesch): {score}"
       },
