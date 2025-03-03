@@ -91,10 +91,6 @@
   </style>
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WSQH2CZC"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
   <div class="theme-banner">Catch AI Cheaters in Seconds!</div>
   <header>
     <h1>AI Homework Detector</h1>
@@ -238,13 +234,13 @@
       document.querySelector("header p").innerHTML = t.subtitle;
       document.querySelector(".theme-banner").innerHTML = t.banner;
       document.querySelector(".main p").innerHTML = t.prompt;
-      document.querySelector("#inputText").placeholder = t.placeholder;
-      document.querySelector("#compareText").placeholder = t.comparePlaceholder;
-      document.querySelector("#analyzeBtn").innerHTML = t.analyze;
-      document.querySelector("#compareBtn").innerHTML = t.compare;
-      document.querySelector("#exportBtn").innerHTML = t.export;
-      document.querySelector("#shareBtn").innerHTML = t.share;
-      document.querySelector("#clearBtn").innerHTML = t.clear;
+      document.getElementById("inputText").placeholder = t.placeholder;
+      document.getElementById("compareText").placeholder = t.comparePlaceholder;
+      document.getElementById("analyzeBtn").innerHTML = t.analyze;
+      document.getElementById("compareBtn").innerHTML = t.compare;
+      document.getElementById("exportBtn").innerHTML = t.export;
+      document.getElementById("shareBtn").innerHTML = t.share;
+      document.getElementById("clearBtn").innerHTML = t.clear;
       document.querySelector(".sidebar h3").innerHTML = t.tipsTitle;
       document.querySelector(".sidebar-content p").innerHTML = t.tipsText;
       document.querySelector("footer p").innerHTML = t.footer;
