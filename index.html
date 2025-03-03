@@ -105,7 +105,7 @@
       <button onclick="detectAI()" id="analyzeBtn">Analyze Text</button>
       <button onclick="compareTexts()" id="compareBtn">Compare Texts</button>
       <button onclick="exportResults()" id="exportBtn">Export Results</button>
-      <button onclick="shareOnX()" id="shareBtn">Share on X</button>
+      <button onclick="shareOnX()" id="shareBtn">Share: 𝕏</button>
       <button onclick="clearText()" id="clearBtn">Clear</button>
       <div id="result"></div>
       <div id="compareResult"></div>
@@ -128,7 +128,7 @@
         title: "Detektor AI Úkolů", subtitle: "Pro učitele, rodiče a čestné studenty", banner: "Chyťte podvodníky s AI během několika sekund!",
         prompt: "Vložte text studenta k odhalení AI generovaného obsahu.", placeholder: "Sem vložte text (např. domácí úkoly, eseje)...",
         comparePlaceholder: "Sem vložte druhý text pro porovnání...", analyze: "Analyzovat text", compare: "Porovnat texty",
-        export: "Exportovat výsledky", share: "Sdílet na X", clear: "Vyčistit", tipsTitle: "Tipy pro učitele",
+        export: "Exportovat výsledky", share: "Sdílet: 𝕏", clear: "Vyčistit", tipsTitle: "Tipy pro učitele",
         tipsText: "Texty od AI mají často jednotné věty, vyleštěné fráze a nadužívané přechody jako 'závěrem'.",
         footer: "Vytvořeno pro podporu čestné práce | <a href='mailto:your-email@example.com'>Kontaktujte nás</a>",
         noText: "Zadejte text k analýze.", aiLabel: "Pravděpodobnost AI:", likelyAI: "Pravděpodobně generováno AI",
@@ -138,11 +138,154 @@
         title: "AI Homework Detector", subtitle: "For Teachers, Parents, and Honest Students", banner: "Catch AI Cheaters in Seconds!",
         prompt: "Paste student text to detect AI-generated homework.", placeholder: "Paste text here (e.g., homework, essays)...",
         comparePlaceholder: "Paste second text to compare...", analyze: "Analyze Text", compare: "Compare Texts",
-        export: "Export Results", share: "Share on X", clear: "Clear", tipsTitle: "Tips for Teachers",
+        export: "Export Results", share: "Share: 𝕏", clear: "Clear", tipsTitle: "Tips for Teachers",
         tipsText: "AI text often has uniform sentences, polished phrasing, and overused transitions like 'in conclusion'.",
         footer: "Built to promote honest work | <a href='mailto:your-email@example.com'>Contact Us</a>",
         noText: "Please enter some text to analyze.", aiLabel: "AI Likelihood:", likelyAI: "Likely AI-generated",
         likelyHuman: "Likely human-written", compareResult: "Comparison: Text 1 - {score1}%, Text 2 - {score2}%"
       },
       DE: {
-        title: "KI
+        title: "KI-Hausaufgabendetektor", subtitle: "Für Lehrer, Eltern und ehrliche Schüler", banner: "Fange KI-Betrüger in Sekunden!",
+        prompt: "Füge den Schülertext ein, um KI-generierte Hausaufgaben zu erkennen.", placeholder: "Text hier einfügen (z.B. Hausaufgaben, Aufsätze)...",
+        comparePlaceholder: "Zweiten Text zum Vergleich einfügen...", analyze: "Text analysieren", compare: "Texte vergleichen",
+        export: "Ergebnisse exportieren", share: "Teilen: 𝕏", clear: "Löschen", tipsTitle: "Tipps für Lehrer",
+        tipsText: "KI-Texte haben oft einheitliche Sätze, geschliffene Formulierungen und übermäßig genutzte Übergänge wie 'zum Schluss'.",
+        footer: "Entwickelt zur Förderung ehrlicher Arbeit | <a href='mailto:your-email@example.com'>Kontaktieren Sie uns</a>",
+        noText: "Bitte geben Sie einen Text zur Analyse ein.", aiLabel: "KI-Wahrscheinlichkeit:", likelyAI: "Wahrscheinlich KI-generiert",
+        likelyHuman: "Wahrscheinlich menschlich geschrieben", compareResult: "Vergleich: Text 1 - {score1}%, Text 2 - {score2}%"
+      },
+      FR: {
+        title: "Détecteur de Devoirs IA", subtitle: "Pour les enseignants, les parents et les élèves honnêtes", banner: "Attrapez les tricheurs IA en quelques secondes !",
+        prompt: "Collez le texte de l'élève pour détecter les devoirs générés par IA.", placeholder: "Collez le texte ici (ex. devoirs, essais)...",
+        comparePlaceholder: "Collez un deuxième texte pour comparer...", analyze: "Analyser le texte", compare: "Comparer les textes",
+        export: "Exporter les résultats", share: "Partager: 𝕏", clear: "Effacer", tipsTitle: "Conseils pour les enseignants",
+        tipsText: "Les textes IA ont souvent des phrases uniformes, des formulations soignées et des transitions surutilisées comme 'en conclusion'.",
+        footer: "Conçu pour promouvoir un travail honnête | <a href='mailto:your-email@example.com'>Contactez-nous</a>",
+        noText: "Veuillez entrer un texte à analyser.", aiLabel: "Probabilité IA :", likelyAI: "Probablement généré par IA",
+        likelyHuman: "Probablement écrit par un humain", compareResult: "Comparaison : Texte 1 - {score1}%, Texte 2 - {score2}%"
+      },
+      ES: {
+        title: "Detector de Tareas IA", subtitle: "Para maestros, padres y estudiantes honestos", banner: "¡Atrapa a los tramposos con IA en segundos!",
+        prompt: "Pega el texto del estudiante para detectar tareas generadas por IA.", placeholder: "Pega el texto aquí (ej. tareas, ensayos)...",
+        comparePlaceholder: "Pega un segundo texto para comparar...", analyze: "Analizar texto", compare: "Comparar textos",
+        export: "Exportar resultados", share: "Compartir: 𝕏", clear: "Limpiar", tipsTitle: "Consejos para maestros",
+        tipsText: "Los textos de IA suelen tener oraciones uniformes, frases pulidas y transiciones sobre utilizadas como 'en conclusión'.",
+        footer: "Creado para promover el trabajo honesto | <a href='mailto:your-email@example.com'>Contáctenos</a>",
+        noText: "Por favor, ingrese un texto para analizar.", aiLabel: "Probabilidad de IA:", likelyAI: "Probablemente generado por IA",
+        likelyHuman: "Probablemente escrito por humanos", compareResult: "Comparación: Texto 1 - {score1}%, Texto 2 - {score2}%"
+      }
+    };
+
+    function switchLang(lang) {
+      currentLang = lang;
+      ["CZE", "ENG", "DE", "FR", "ES"].forEach(l => 
+        document.getElementById(`btn${l}`).style.backgroundColor = l === lang ? "#0056b3" : "#007BFF"
+      );
+      const t = translations[lang];
+      document.getElementById("title").innerHTML = t.title;
+      document.getElementById("subtitle").innerHTML = t.subtitle;
+      document.getElementById("bannerText").innerHTML = t.banner;
+      document.getElementById("prompt").innerHTML = t.prompt;
+      document.getElementById("inputText").placeholder = t.placeholder;
+      document.getElementById("compareText").placeholder = t.comparePlaceholder;
+      document.getElementById("analyzeBtn").innerHTML = t.analyze;
+      document.getElementById("compareBtn").innerHTML = t.compare;
+      document.getElementById("exportBtn").innerHTML = t.export;
+      document.getElementById("shareBtn").innerHTML = t.share;
+      document.getElementById("clearBtn").innerHTML = t.clear;
+      document.getElementById("tipsTitle").innerHTML = t.tipsTitle;
+      document.getElementById("tipsText").innerHTML = t.tipsText;
+      document.getElementById("footerText").innerHTML = t.footer;
+      detectAI(); // Re-run if text exists
+    }
+
+    function analyzeText(text) {
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      const words = text.split(/\s+/).filter(w => w.length > 0);
+      const avgSentenceLength = sentences.reduce((sum, s) => sum + s.split(" ").length, 0) / sentences.length || 0;
+      const wordCount = words.length;
+      const uniqueWords = new Set(words.map(w => w.toLowerCase())).size;
+      const repetitionScore = (wordCount - uniqueWords) / wordCount;
+      const sentenceLengthVariance = sentences.map(s => s.split(" ").length)
+        .reduce((sum, len, _, arr) => sum + Math.pow(len - avgSentenceLength, 2), 0) / sentences.length || 0;
+      const transitionPhrases = ["for example", "in conclusion", "finally", "first", "second", "another", "například", "závěrem"]
+        .reduce((count, phrase) => count + (text.toLowerCase().split(phrase).length - 1), 0);
+
+      let aiScore = 20; // Baseline for polished structure
+      if (avgSentenceLength > 8 && avgSentenceLength < 16) aiScore += 25;
+      if (repetitionScore < 0.3) aiScore += 20;
+      if (sentenceLengthVariance < 15) aiScore += 20;
+      if (transitionPhrases > 1) aiScore += 20;
+      if (wordCount > 100 && sentences.length < 15) aiScore += 15;
+
+      return Math.min(Math.round(aiScore), 100);
+    }
+
+    function detectAI() {
+      const text = document.getElementById("inputText").value.trim();
+      if (!text) {
+        document.getElementById("result").innerHTML = translations[currentLang].noText;
+        document.getElementById("compareResult").innerHTML = "";
+        return;
+      }
+      const finalScore = analyzeText(text);
+      const resultText = finalScore > 50 ? translations[currentLang].likelyAI : translations[currentLang].likelyHuman;
+      document.getElementById("result").innerHTML = 
+        `${translations[currentLang].aiLabel} ${finalScore}% - ${resultText}`;
+      document.getElementById("compareResult").innerHTML = "";
+    }
+
+    function compareTexts() {
+      const text1 = document.getElementById("inputText").value.trim();
+      const text2 = document.getElementById("compareText").value.trim();
+      if (!text1 || !text2) {
+        document.getElementById("compareResult").innerHTML = translations[currentLang].noText;
+        return;
+      }
+      const score1 = analyzeText(text1);
+      const score2 = analyzeText(text2);
+      document.getElementById("compareResult").innerHTML = 
+        translations[currentLang].compareResult.replace("{score1}", score1).replace("{score2}", score2);
+    }
+
+    function exportResults() {
+      const text1 = document.getElementById("inputText").value.trim();
+      const text2 = document.getElementById("compareText").value.trim();
+      let content = "";
+      if (text1) {
+        const score1 = analyzeText(text1);
+        content += `${translations[currentLang].aiLabel} Text 1: ${score1}%\n`;
+      }
+      if (text2) {
+        const score2 = analyzeText(text2);
+        content += `${translations[currentLang].aiLabel} Text 2: ${score2}%\n`;
+      }
+      if (!content) {
+        alert(translations[currentLang].noText);
+        return;
+      }
+      const blob = new Blob([content], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "ai_detector_results.txt";
+      link.click();
+    }
+
+    function shareOnX() {
+      const url = "https://aeell.github.io/ai-text-detector/";
+      const text = encodeURIComponent(`Check out this free AI Homework Detector! Catch AI-generated homework instantly: ${url} #Education #AI`);
+      window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank");
+    }
+
+    function clearText() {
+      document.getElementById("inputText").value = "";
+      document.getElementById("compareText").value = "";
+      document.getElementById("result").innerHTML = "";
+      document.getElementById("compareResult").innerHTML = "";
+    }
+
+    // Set English as default
+    switchLang("ENG");
+  </script>
+</body>
+</html>
