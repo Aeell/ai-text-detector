@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free AI Text Detector - Check if text is AI-generated or human-written instantly.">
+  <meta name="keywords" content="AI text detector, free AI checker, detect AI content, human vs AI text">
+  <title>AI Text Detector - Free Online Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    h1 { color: #333; }
+    textarea {
+      width: 80%;
+      max-width: 600px;
+      height: 200px;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #0056b3; }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI Text Detector</h1>
+  <p>Paste your text below to check if it’s AI-generated or human-written.</p>
+  <textarea id="inputText" placeholder="Paste your text here..."></textarea>
+  <br>
+  <button onclick="detectAI()">Analyze Text</button>
+  <div id="result"></div>
 
+  <script>
+    function detectAI() {
+      const text = document.getElementById("inputText").value.trim();
+      if (!text) {
+        document.getElementById("result").innerHTML = "Please enter some text to analyze.";
+        return;
+      }
+
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+      const avgSentenceLength = sentences.reduce((sum, s) => sum + s.split(" ").length, 0) / sentences.length || 0;
+      const wordCount = text.split(/\s+/).length;
+      const uniqueWords = new Set(text.toLowerCase().split(/\s+/)).size;
+      const repetitionScore = (wordCount - uniqueWords) / wordCount;
+
+      let aiScore = 0;
+      if (avgSentenceLength < 12 && avgSentenceLength > 0) aiScore += 40; // AI tends to use shorter sentences
+      if (repetitionScore < 0.2) aiScore += 30; // Low repetition is common in AI text
+      if (text.length > 100 && sentences.length < 5) aiScore += 30; // AI avoids long paragraphs
+
+      const finalScore = Math.min(aiScore, 100);
+      const resultText = finalScore > 50 ? "Likely AI-generated" : "Likely human-written";
+      document.getElementById("result").innerHTML = 
+        `AI Likelihood: ${finalScore}% - ${resultText}`;
+    }
+  </script>
+</body>
+</html>
