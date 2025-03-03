@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Free AI Text Detector - Catch AI-generated homework instantly.">
-  <meta name="keywords" content="AI text detector, detect AI homework, AI cheating tool, teachers, parents">
-  <title>AI Homework Detector - Free Online Tool</title>
+  <meta name="description" content="Detektor AI úkolů zdarma - Odhalte text generovaný AI okamžitě.">
+  <meta name="keywords" content="detektor AI, odhalit AI úkoly, nástroj proti podvádění, učitelé, rodiče">
+  <title>Detektor AI Úkolů - Online Nástroj Zdarma</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -15,8 +15,12 @@
       background-color: #1a1a1a;
       color: #e0e0e0;
     }
-    h1 { color: #ffffff; }
-    p { color: #b0b0b0; }
+    header { background-color: #333; padding: 10px; color: white; position: relative; }
+    h1 { margin: 0; }
+    h3 { color: #fff; }
+    .container { display: flex; max-width: 900px; margin: 20px auto; }
+    .main { flex: 2; }
+    .sidebar { flex: 1; padding: 10px; background-color: #2a2a2a; border-radius: 5px; margin-left: 20px; }
     textarea {
       width: 80%;
       max-width: 600px;
@@ -36,28 +40,69 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin: 5px;
     }
     button:hover { background-color: #0056b3; }
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #00cc00;
-    }
+    #result { margin-top: 20px; font-size: 18px; color: #00cc00; }
+    footer { margin-top: 20px; font-size: 14px; color: #b0b0b0; }
+    a { color: #007BFF; text-decoration: none; }
+    .lang-toggle { position: absolute; top: 10px; right: 10px; }
   </style>
 </head>
 <body>
-  <h1>AI Homework Detector</h1>
-  <p>Paste student text below to check if it’s AI-generated or human-written.</p>
-  <textarea id="inputText" placeholder="Paste text here (e.g., homework, essays)..."></textarea>
-  <br>
-  <button onclick="detectAI()">Analyze Text</button>
-  <div id="result"></div>
+  <header>
+    <h1 id="title">Detektor AI Úkolů</h1>
+    <p id="subtitle">Pro učitele, rodiče a čestné studenty</p>
+    <div class="lang-toggle">
+      <button onclick="switchLang('CZE')" id="btnCZE">CZE</button>
+      <button onclick="switchLang('ENG')" id="btnENG">ENG</button>
+    </div>
+  </header>
+  <div class="container">
+    <div class="main">
+      <p id="prompt">Vložte text studenta k odhalení AI generovaného obsahu.</p>
+      <textarea id="inputText" placeholder="Sem vložte text (např. domácí úkoly, eseje)..."></textarea>
+      <br>
+      <button onclick="detectAI()" id="analyzeBtn">Analyzovat text</button>
+      <button onclick="clearText()" id="clearBtn">Vyčistit</button>
+      <div id="result"></div>
+    </div>
+    <aside class="sidebar">
+      <h3 id="tipsTitle">Tipy pro učitele</h3>
+      <p id="tipsText" style="font-size: 14px;">Texty od AI mají často jednotné věty, vyleštěné fráze a nadužívané přechody jako "závěrem".</p>
+    </aside>
+  </div>
+  <footer>
+    <p id="footerText">Vytvořeno pro podporu čestné práce | <a href="mailto:your-email@example.com">Kontaktujte nás</a></p>
+  </footer>
 
   <script>
+    let currentLang = "CZE";
+
+    function switchLang(lang) {
+      currentLang = lang;
+      document.getElementById("btnCZE").style.backgroundColor = lang === "CZE" ? "#0056b3" : "#007BFF";
+      document.getElementById("btnENG").style.backgroundColor = lang === "ENG" ? "#0056b3" : "#007BFF";
+      document.getElementById("title").innerHTML = lang === "CZE" ? "Detektor AI Úkolů" : "AI Homework Detector";
+      document.getElementById("subtitle").innerHTML = lang === "CZE" ? "Pro učitele, rodiče a čestné studenty" : "For Teachers, Parents, and Honest Students";
+      document.getElementById("prompt").innerHTML = lang === "CZE" ? "Vložte text studenta k odhalení AI generovaného obsahu." : "Paste student text to detect AI-generated homework.";
+      document.getElementById("inputText").placeholder = lang === "CZE" ? "Sem vložte text (např. domácí úkoly, eseje)..." : "Paste text here (e.g., homework, essays)...";
+      document.getElementById("analyzeBtn").innerHTML = lang === "CZE" ? "Analyzovat text" : "Analyze Text";
+      document.getElementById("clearBtn").innerHTML = lang === "CZE" ? "Vyčistit" : "Clear";
+      document.getElementById("tipsTitle").innerHTML = lang === "CZE" ? "Tipy pro učitele" : "Tips for Teachers";
+      document.getElementById("tipsText").innerHTML = lang === "CZE" 
+        ? "Texty od AI mají často jednotné věty, vyleštěné fráze a nadužívané přechody jako 'závěrem'." 
+        : "AI text often has uniform sentences, polished phrasing, and overused transitions like 'in conclusion'.";
+      document.getElementById("footerText").innerHTML = lang === "CZE" 
+        ? "Vytvořeno pro podporu čestné práce | <a href='mailto:your-email@example.com'>Kontaktujte nás</a>" 
+        : "Built to promote honest work | <a href='mailto:your-email@example.com'>Contact Us</a>";
+      detectAI(); // Re-run analysis if text exists
+    }
+
     function detectAI() {
       const text = document.getElementById("inputText").value.trim();
       if (!text) {
-        document.getElementById("result").innerHTML = "Please enter some text to analyze.";
+        document.getElementById("result").innerHTML = currentLang === "CZE" ? "Zadejte text k analýze." : "Please enter some text to analyze.";
         return;
       }
 
@@ -69,21 +114,32 @@
       const repetitionScore = (wordCount - uniqueWords) / wordCount;
       const sentenceLengthVariance = sentences.map(s => s.split(" ").length)
         .reduce((sum, len, _, arr) => sum + Math.pow(len - avgSentenceLength, 2), 0) / sentences.length || 0;
+      const transitionPhrases = ["for example", "in conclusion", "finally", "first", "second", "another", "například", "závěrem"]
+        .reduce((count, phrase) => count + (text.toLowerCase().split(phrase).length - 1), 0);
 
-      let aiScore = 0;
+      let aiScore = 20; // Baseline for polished structure
 
-      // Adjusted weights to target 60-70% for Grok-style text
-      if (avgSentenceLength > 8 && avgSentenceLength < 14) aiScore += 25; // Grok uses moderate sentence lengths
-      if (repetitionScore < 0.25) aiScore += 20; // Low repetition in polished AI text
-      if (sentenceLengthVariance < 10) aiScore += 20; // Consistent lengths are AI-like
-      if (text.includes("for example") || text.includes("in conclusion")) aiScore += 15; // Common AI structuring phrases
-      if (wordCount > 50 && sentences.length < 10) aiScore += 10; // Concise paragraphing
+      if (avgSentenceLength > 8 && avgSentenceLength < 16) aiScore += 25;
+      if (repetitionScore < 0.3) aiScore += 20;
+      if (sentenceLengthVariance < 15) aiScore += 20;
+      if (transitionPhrases > 1) aiScore += 20;
+      if (wordCount > 100 && sentences.length < 15) aiScore += 15;
 
       const finalScore = Math.min(Math.round(aiScore), 100);
-      const resultText = finalScore > 50 ? "Likely AI-generated" : "Likely human-written";
+      const resultText = finalScore > 50 
+        ? (currentLang === "CZE" ? "Pravděpodobně generováno AI" : "Likely AI-generated")
+        : (currentLang === "CZE" ? "Pravděpodobně napsáno člověkem" : "Likely human-written");
       document.getElementById("result").innerHTML = 
-        `AI Likelihood: ${finalScore}% - ${resultText}`;
+        `${currentLang === "CZE" ? "Pravděpodobnost AI:" : "AI Likelihood:"} ${finalScore}% - ${resultText}`;
     }
+
+    function clearText() {
+      document.getElementById("inputText").value = "";
+      document.getElementById("result").innerHTML = "";
+    }
+
+    // Set Czech as default
+    switchLang("CZE");
   </script>
 </body>
 </html>
