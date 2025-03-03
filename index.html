@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-WSQH2CZC');</script>
-  <!-- End Google Tag Manager -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-B7D3JPPRD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-B7D3JPPRD');
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- English SEO -->
   <meta name="description" content="Free AI Homework Detector with Word Counter, Repeating Words, and AI Text Checker - Detect AI-generated student work instantly for teachers, parents, and schools. Catch cheating now!">
@@ -53,7 +54,18 @@
   </script>
   <title>AI Homework Detector - Free Online Tool</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; background: #1a1a1a url('sherlock-ai-background.jpg') no-repeat center/cover; color: #e0e0e0; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      background: #1a1a1a url('sherlock-ai-background.jpg') no-repeat center/cover;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
     header { background-color: rgba(51, 51, 51, 0.8); padding: 10px; color: white; position: relative; border-radius: 5px; }
     h1 { margin: 0; font-size: 2em; text-shadow: 1px 1px 2px #000; }
     h3 { color: #fff; }
@@ -67,7 +79,7 @@
     footer { background-color: rgba(51, 51, 51, 0.8); padding: 10px; font-size: 14px; color: #b0b0b0; border-radius: 5px; }
     a { color: #007BFF; text-decoration: none; }
     .lang-toggle { position: absolute; top: 10px; right: 10px; }
-    .theme-banner { max-width: 900px; margin: 0 auto 20px; background: rgba(0, 0, 0, 0.7); padding: 10px; border-radius: 5px; color: #00cc00; font-size: 1.2em; text-shadow: 1px 1px 2px #000; }
+    .theme-banner { max-width: 900px; margin: 0 auto 20px; background: rgba(0, 100, 0, 0.7); padding: 10px; border-radius: 5px; color: white; font-size: 1.2em; text-shadow: 1px 1px 2px #000; }
     .sidebar-content { background: rgba(0, 100, 0, 0.7); padding: 10px; border-radius: 5px; color: white; margin-top: 10px; }
     @media (max-width: 768px) {
       .container { flex-direction: column; }
@@ -105,11 +117,11 @@
       <textarea id="inputText" placeholder="Paste text here (e.g., homework, essays)..."></textarea>
       <textarea id="compareText" placeholder="Paste second text to compare..."></textarea>
       <br>
-      <button onclick="detectAI()">Analyze Text</button>
-      <button onclick="compareTexts()">Compare Texts</button>
-      <button onclick="exportResults()">Export Results</button>
-      <button onclick="shareOnX()">Share: 𝕏</button>
-      <button onclick="clearText()">Clear</button>
+      <button id="analyzeBtn" onclick="detectAI()">Analyze Text</button>
+      <button id="compareBtn" onclick="compareTexts()">Compare Texts</button>
+      <button id="exportBtn" onclick="exportResults()">Export Results</button>
+      <button id="shareBtn" onclick="shareOnX()">Share: 𝕏</button>
+      <button id="clearBtn" onclick="clearText()">Clear</button>
       <div id="result"></div>
       <div id="compareResult"></div>
       <div id="wordCount"></div>
@@ -222,20 +234,20 @@
     function switchLang(lang) {
       currentLang = lang;
       const t = translations[lang];
-      document.getElementById("title").innerHTML = t.title;
-      document.getElementById("subtitle").innerHTML = t.subtitle;
-      document.getElementById("bannerText").innerHTML = t.banner;
-      document.getElementById("prompt").innerHTML = t.prompt;
-      document.getElementById("inputText").placeholder = t.placeholder;
-      document.getElementById("compareText").placeholder = t.comparePlaceholder;
-      document.getElementById("analyzeBtn").innerHTML = t.analyze;
-      document.getElementById("compareBtn").innerHTML = t.compare;
-      document.getElementById("exportBtn").innerHTML = t.export;
-      document.getElementById("shareBtn").innerHTML = t.share;
-      document.getElementById("clearBtn").innerHTML = t.clear;
-      document.getElementById("tipsTitle").innerHTML = t.tipsTitle;
-      document.getElementById("tipsText").innerHTML = t.tipsText;
-      document.getElementById("footerText").innerHTML = t.footer;
+      document.querySelector("h1").innerHTML = t.title;
+      document.querySelector("header p").innerHTML = t.subtitle;
+      document.querySelector(".theme-banner").innerHTML = t.banner;
+      document.querySelector(".main p").innerHTML = t.prompt;
+      document.querySelector("#inputText").placeholder = t.placeholder;
+      document.querySelector("#compareText").placeholder = t.comparePlaceholder;
+      document.querySelector("#analyzeBtn").innerHTML = t.analyze;
+      document.querySelector("#compareBtn").innerHTML = t.compare;
+      document.querySelector("#exportBtn").innerHTML = t.export;
+      document.querySelector("#shareBtn").innerHTML = t.share;
+      document.querySelector("#clearBtn").innerHTML = t.clear;
+      document.querySelector(".sidebar h3").innerHTML = t.tipsTitle;
+      document.querySelector(".sidebar-content p").innerHTML = t.tipsText;
+      document.querySelector("footer p").innerHTML = t.footer;
       detectAI(); // Re-run if text exists
     }
 
