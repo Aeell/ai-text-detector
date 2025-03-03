@@ -12,15 +12,39 @@
       text-align: center;
       margin: 0;
       padding: 20px;
-      background-color: #1a1a1a;
+      background: #1a1a1a url('sherlock-ai-background.jpg') no-repeat center/cover;
       color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    header { background-color: #333; padding: 10px; color: white; position: relative; }
-    h1 { margin: 0; }
+    header { 
+      background-color: rgba(51, 51, 51, 0.8); 
+      padding: 10px; 
+      color: white; 
+      position: relative; 
+      border-radius: 5px;
+    }
+    h1 { margin: 0; font-size: 2em; text-shadow: 1px 1px 2px #000; }
     h3 { color: #fff; }
-    .container { display: flex; max-width: 900px; margin: 20px auto; }
+    .container { 
+      display: flex; 
+      max-width: 900px; 
+      margin: 20px auto; 
+      background: rgba(42, 42, 42, 0.85); 
+      padding: 20px; 
+      border-radius: 10px; 
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
     .main { flex: 2; }
-    .sidebar { flex: 1; padding: 10px; background-color: #2a2a2a; border-radius: 5px; margin-left: 20px; }
+    .sidebar { 
+      flex: 1; 
+      padding: 10px; 
+      background-color: rgba(34, 34, 34, 0.9); 
+      border-radius: 5px; 
+      margin-left: 20px; 
+    }
     textarea {
       width: 80%;
       max-width: 600px;
@@ -43,13 +67,30 @@
       margin: 5px;
     }
     button:hover { background-color: #0056b3; }
-    #result { margin-top: 20px; font-size: 18px; color: #00cc00; }
-    footer { margin-top: 20px; font-size: 14px; color: #b0b0b0; }
+    #result { margin-top: 20px; font-size: 18px; color: #00cc00; text-shadow: 1px 1px 2px #000; }
+    footer { 
+      background-color: rgba(51, 51, 51, 0.8); 
+      padding: 10px; 
+      font-size: 14px; 
+      color: #b0b0b0; 
+      border-radius: 5px;
+    }
     a { color: #007BFF; text-decoration: none; }
     .lang-toggle { position: absolute; top: 10px; right: 10px; }
+    .theme-banner {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+      color: #00cc00;
+      font-size: 1.2em;
+      text-shadow: 1px 1px 2px #000;
+    }
   </style>
 </head>
 <body>
+  <div class="theme-banner" id="bannerText">Chyťte podvodníky s AI během několika sekund!</div>
   <header>
     <h1 id="title">Detektor AI Úkolů</h1>
     <p id="subtitle">Pro učitele, rodiče a čestné studenty</p>
@@ -73,7 +114,7 @@
     </aside>
   </div>
   <footer>
-    <p id="footerText">Vytvořeno pro podporu čestné práce | <a href="mailto:stanwesly@gmail.com">Kontaktujte nás</a></p>
+    <p id="footerText">Vytvořeno pro podporu čestné práce | <a href="mailto:your-email@example.com">Kontaktujte nás</a></p>
   </footer>
 
   <script>
@@ -85,6 +126,7 @@
       document.getElementById("btnENG").style.backgroundColor = lang === "ENG" ? "#0056b3" : "#007BFF";
       document.getElementById("title").innerHTML = lang === "CZE" ? "Detektor AI Úkolů" : "AI Homework Detector";
       document.getElementById("subtitle").innerHTML = lang === "CZE" ? "Pro učitele, rodiče a čestné studenty" : "For Teachers, Parents, and Honest Students";
+      document.getElementById("bannerText").innerHTML = lang === "CZE" ? "Chyťte podvodníky s AI během několika sekund!" : "Catch AI Cheaters in Seconds!";
       document.getElementById("prompt").innerHTML = lang === "CZE" ? "Vložte text studenta k odhalení AI generovaného obsahu." : "Paste student text to detect AI-generated homework.";
       document.getElementById("inputText").placeholder = lang === "CZE" ? "Sem vložte text (např. domácí úkoly, eseje)..." : "Paste text here (e.g., homework, essays)...";
       document.getElementById("analyzeBtn").innerHTML = lang === "CZE" ? "Analyzovat text" : "Analyze Text";
