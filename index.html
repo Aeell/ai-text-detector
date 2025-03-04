@@ -60,8 +60,8 @@
       text-align: center;
       margin: 0;
       padding: 20px;
-      background: url('sherlock-ai-background.jpg') no-repeat center/cover fixed;
-      color: #333;
+      background-color: #1a1a1a;
+      color: #fff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -70,18 +70,17 @@
     header {
       padding: 15px;
       color: #fff;
-      background-color: #1a1a1a;
+      background-color: #2c3e50;
       position: relative;
       border-radius: 5px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
     h1 {
       margin: 0;
       font-size: 2.5em;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
     }
     h3 {
-      color: #333;
+      color: #ddd;
     }
     .container {
       display: flex;
@@ -90,28 +89,25 @@
       padding: 20px;
       border-radius: 10px;
     }
-    .main {
-      flex: 1;
+    .input-section {
+      flex: 2;
       padding-right: 20px;
-      text-align: left;
+      text-align: center;
     }
-    .sidebar {
-      flex: 0 0 300px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 5px;
-      backdrop-filter: blur(5px);
+    .lang-toggle {
+      margin-bottom: 10px;
     }
     textarea {
       width: 100%;
-      height: 200px;
+      max-width: 600px;
+      height: 150px;
       padding: 15px;
       font-size: 16px;
-      background-color: rgba(255, 255, 255, 0.05);
+      background-color: #2c3e50;
       color: #fff;
       border: 1px solid #555;
       border-radius: 5px;
-      margin: 10px 0;
+      margin: 10px auto;
       resize: vertical;
       box-shadow: none;
     }
@@ -120,66 +116,70 @@
       flex-wrap: wrap;
       gap: 10px;
       margin: 10px 0;
+      justify-content: center;
     }
     button {
       padding: 10px 20px;
       font-size: 16px;
-      background-color: #28a745;
-      color: white;
+      background-color: #34495e;
+      color: #fff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
     }
     button:hover {
-      background-color: #218838;
+      background-color: #2c3e50;
     }
     select {
       padding: 10px;
       font-size: 16px;
-      background-color: #8B4513;
-      color: white;
+      background-color: #34495e;
+      color: #fff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
     }
     select:hover {
-      background-color: #6B2E0E;
+      background-color: #2c3e50;
     }
     #result, #compareResult, #wordCount, #repeatWords, #sentenceCount, #readability {
       margin-top: 10px;
       font-size: 16px;
       color: #28a745;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
     }
-    footer {
-      background-color: #1a1a1a;
-      padding: 10px;
-      font-size: 14px;
-      color: #b0b0b0;
+    .sidebar {
+      flex: 0 0 300px;
+      padding: 20px;
+      background: #2c3e50;
       border-radius: 5px;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
-    }
-    a { color: #007BFF; text-decoration: none; }
-    .lang-toggle { position: absolute; top: 15px; right: 15px; }
-    .theme-banner {
-      max-width: 1000px;
-      margin: 0 auto 20px;
-      padding: 10px;
-      border-radius: 5px;
-      color: white;
-      font-size: 1.2em;
-      text-shadow: 1px 1px 2px #000;
-      background: rgba(40, 167, 69, 0.9);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
     .tips-box {
       border: 1px solid #28a745;
       padding: 15px;
       border-radius: 5px;
       font-family: 'Open Sans', sans-serif;
+      color: #ddd;
+    }
+    footer {
+      background-color: #2c3e50;
+      padding: 10px;
+      font-size: 14px;
+      color: #b0b0b0;
+      border-radius: 5px;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    }
+    a { color: #28a745; text-decoration: none; }
+    .theme-banner {
+      max-width: 1000px;
+      margin: 0 auto 20px;
+      padding: 10px;
+      border-radius: 5px;
       color: #fff;
-      background: rgba(139, 69, 19, 0.2);
+      font-size: 1.2em;
+      background: #34495e;
     }
     #educatorsBtn {
       padding: 10px 20px;
@@ -196,11 +196,10 @@
     }
     @media (max-width: 768px) {
       .container { flex-direction: column; }
-      .main { padding-right: 0; }
+      .input-section { padding-right: 0; }
       .sidebar { margin-top: 20px; flex: 1; }
       textarea { width: 100%; }
       .button-group { flex-direction: column; }
-      .lang-toggle { position: static; margin: 10px 0; }
     }
   </style>
 </head>
@@ -209,21 +208,21 @@
   <header>
     <h1>AI Homework Detector</h1>
     <p>For Teachers, Parents, and Honest Students</p>
-    <div class="lang-toggle">
-      <select id="langSelect" onchange="switchLang(this.value)">
-        <option value="ENG">ENG</option>
-        <option value="CZE">CZE</option>
-        <option value="DE">DE</option>
-        <option value="FR">FR</option>
-        <option value="ES">ES</option>
-        <option value="UK">UK</option>
-        <option value="RU">RU</option>
-      </select>
-    </div>
     <button id="educatorsBtn" onclick="window.location.href='educators.html'">Educators Tools</button>
   </header>
   <div class="container">
-    <div class="main">
+    <div class="input-section">
+      <div class="lang-toggle">
+        <select id="langSelect" onchange="switchLang(this.value)">
+          <option value="ENG">ENG</option>
+          <option value="CZE">CZE</option>
+          <option value="DE">DE</option>
+          <option value="FR">FR</option>
+          <option value="ES">ES</option>
+          <option value="UK">UK</option>
+          <option value="RU">RU</option>
+        </select>
+      </div>
       <p>Paste student text to detect AI-generated homework.</p>
       <textarea id="inputText" placeholder="Paste text here (e.g., homework, essays)..."></textarea>
       <textarea id="compareText" placeholder="Paste second text to compare..."></textarea>
@@ -354,7 +353,7 @@
       document.querySelector("h1").innerHTML = t.title;
       document.querySelector("header p").innerHTML = t.subtitle;
       document.querySelector(".theme-banner").innerHTML = t.banner;
-      document.querySelector(".main p").innerHTML = t.prompt;
+      document.querySelector(".input-section p").innerHTML = t.prompt;
       document.getElementById("inputText").placeholder = t.placeholder;
       document.getElementById("compareText").placeholder = t.comparePlaceholder;
       document.getElementById("analyzeBtn").innerHTML = t.analyze;
