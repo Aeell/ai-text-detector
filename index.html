@@ -54,33 +54,126 @@
   </script>
   <title>AI Homework Detector - Free Online Tool</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Open Sans', sans-serif;
       text-align: center;
       margin: 0;
       padding: 20px;
-      background: #1a1a1a url('sherlock-ai-background.jpg') no-repeat center/cover;
-      color: #e0e0e0;
+      background: #f4f4f9 url('sherlock-ai-background.jpg') no-repeat center/cover;
+      color: #333;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-    header { background-color: rgba(51, 51, 51, 0.8); padding: 10px; color: white; position: relative; border-radius: 5px; }
-    h1 { margin: 0; font-size: 2em; text-shadow: 1px 1px 2px #000; }
-    h3 { color: #fff; }
-    .container { display: flex; max-width: 900px; margin: 20px auto; background: rgba(42, 42, 42, 0.85); padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
-    .main { flex: 2; }
-    .sidebar { flex: 1; padding: 10px; background-color: rgba(34, 34, 34, 0.9); border-radius: 5px; margin-left: 20px; }
-    textarea { width: 80%; max-width: 600px; height: 150px; padding: 10px; font-size: 16px; background-color: #2a2a2a; color: #e0e0e0; border: 1px solid #444; border-radius: 5px; margin: 10px auto; display: block; }
-    button, select { padding: 10px 20px; font-size: 16px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
-    button:hover, select:hover { background-color: #0056b3; }
-    #result, #compareResult, #wordCount, #repeatWords, #sentenceCount, #readability { margin-top: 10px; font-size: 16px; color: #00cc00; text-shadow: 1px 1px 2px #000; }
-    footer { background-color: rgba(51, 51, 51, 0.8); padding: 10px; font-size: 14px; color: #b0b0b0; border-radius: 5px; }
+    header {
+      background-color: rgba(51, 51, 51, 0.8);
+      padding: 10px;
+      color: white;
+      position: relative;
+      border-radius: 5px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2em;
+      text-shadow: 1px 1px 2px #000;
+    }
+    h3 {
+      color: #333;
+    }
+    .container {
+      display: flex;
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.9);
+    }
+    .main {
+      flex: 2;
+    }
+    .sidebar {
+      flex: 1;
+      padding: 10px;
+      margin-left: 20px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    textarea {
+      width: 80%;
+      max-width: 600px;
+      height: 150px;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #fff;
+      color: #333;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin: 10px auto;
+      display: block;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    button, select {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+      transition: background-color 0.3s;
+    }
+    button:hover, select:hover {
+      background-color: #0056b3;
+    }
+    #result, #compareResult, #wordCount, #repeatWords, #sentenceCount, #readability {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #28a745;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    footer {
+      background-color: rgba(51, 51, 51, 0.8);
+      padding: 10px;
+      font-size: 14px;
+      color: #b0b0b0;
+      border-radius: 5px;
+    }
     a { color: #007BFF; text-decoration: none; }
     .lang-toggle { position: absolute; top: 10px; right: 10px; }
-    .theme-banner { max-width: 900px; margin: 0 auto 20px; background: rgba(0, 100, 0, 0.7); padding: 10px; border-radius: 5px; color: white; font-size: 1.2em; text-shadow: 1px 1px 2px #000; }
-    .sidebar-content { background: rgba(0, 100, 0, 0.7); padding: 10px; border-radius: 5px; color: white; margin-top: 10px; }
+    .theme-banner {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      padding: 10px;
+      border-radius: 5px;
+      color: white;
+      font-size: 1.2em;
+      text-shadow: 1px 1px 2px #000;
+      background: rgba(0, 100, 0, 0.7);
+    }
+    .tips-box {
+      border: 1px solid #007BFF;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: 'Open Sans', sans-serif;
+      color: #333;
+    }
+    #educatorsBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 10px;
+    }
+    #educatorsBtn:hover {
+      background-color: #218838;
+    }
     @media (max-width: 768px) {
       .container { flex-direction: column; }
       .sidebar { margin-left: 0; margin-top: 20px; }
@@ -96,7 +189,7 @@
     <h1>AI Homework Detector</h1>
     <p>For Teachers, Parents, and Honest Students</p>
     <div class="lang-toggle">
-      <select onchange="switchLang(this.value)">
+      <select id="langSelect" onchange="switchLang(this.value)">
         <option value="ENG">ENG</option>
         <option value="CZE">CZE</option>
         <option value="DE">DE</option>
@@ -106,6 +199,7 @@
         <option value="RU">RU</option>
       </select>
     </div>
+    <button id="educatorsBtn" onclick="window.location.href='educators.html'">Educators Tools</button>
   </header>
   <div class="container">
     <div class="main">
@@ -127,9 +221,13 @@
     </div>
     <aside class="sidebar">
       <h3>Tips for Teachers</h3>
-      <div class="sidebar-content">
-        <p>AI text often has uniform sentences, polished phrasing, and overused transitions like "in conclusion".</p>
-        <p>Read our <a href="blog.html">Blog</a>.</p>
+      <div class="tips-box">
+        <ul>
+          <li><strong>Uniform Sentences:</strong> AI text often has consistent sentence lengths.</li>
+          <li><strong>Polished Phrasing:</strong> Look for overly neat prose without errors.</li>
+          <li><strong>Overused Transitions:</strong> Spot phrases like 'in conclusion'.</li>
+        </ul>
+        <p><a href="blog.html">Read our Blog</a></p>
       </div>
     </aside>
   </div>
@@ -146,7 +244,7 @@
         prompt: "Vložte text studenta k odhalení AI generovaného obsahu.", placeholder: "Sem vložte text (např. domácí úkoly, eseje)...",
         comparePlaceholder: "Sem vložte druhý text pro porovnání...", analyze: "Analyzovat text", compare: "Porovnat texty",
         export: "Exportovat výsledky", share: "Sdílet: 𝕏", clear: "Vyčistit", tipsTitle: "Tipy pro učitele",
-        tipsText: "Texty od AI mají často jednotné věty, vyleštěné fráze a nadužívané přechody jako 'závěrem'.",
+        tipsText: "<ul><li><strong>Jednotné věty:</strong> Text AI má často konzistentní délku vět.</li><li><strong>Vyleštěné fráze:</strong> Hledejte příliš úhlednou prózu bez chyb.</li><li><strong>Přepjaté přechody:</strong> Všímajte si frází jako 'závěrem'.</li></ul>",
         footer: "Vytvořeno pro podporu čestné práce | <a href='mailto:your-email@example.com'>Kontaktujte nás</a>",
         noText: "Zadejte text k analýze.", aiLabel: "Pravděpodobnost AI:", likelyAI: "Pravděpodobně generováno AI",
         likelyHuman: "Pravděpodobně napsáno člověkem", compareResult: "Porovnání: Text 1 - {score1}%, Text 2 - {score2}%",
@@ -158,7 +256,7 @@
         prompt: "Paste student text to detect AI-generated homework.", placeholder: "Paste text here (e.g., homework, essays)...",
         comparePlaceholder: "Paste second text to compare...", analyze: "Analyze Text", compare: "Compare Texts",
         export: "Export Results", share: "Share: 𝕏", clear: "Clear", tipsTitle: "Tips for Teachers",
-        tipsText: "AI text often has uniform sentences, polished phrasing, and overused transitions like 'in conclusion'.",
+        tipsText: "<ul><li><strong>Uniform Sentences:</strong> AI text often has consistent sentence lengths.</li><li><strong>Polished Phrasing:</strong> Look for overly neat prose without errors.</li><li><strong>Overused Transitions:</strong> Spot phrases like 'in conclusion'.</li></ul>",
         footer: "Built to promote honest work | <a href='mailto:your-email@example.com'>Contact Us</a>",
         noText: "Please enter some text to analyze.", aiLabel: "AI Likelihood:", likelyAI: "Likely AI-generated",
         likelyHuman: "Likely human-written", compareResult: "Comparison: Text 1 - {score1}%, Text 2 - {score2}%",
@@ -170,7 +268,7 @@
         prompt: "Füge den Schülertext ein, um KI-generierte Hausaufgaben zu erkennen.", placeholder: "Text hier einfügen (z.B. Hausaufgaben, Aufsätze)...",
         comparePlaceholder: "Zweiten Text zum Vergleich einfügen...", analyze: "Text analysieren", compare: "Texte vergleichen",
         export: "Ergebnisse exportieren", share: "Teilen: 𝕏", clear: "Löschen", tipsTitle: "Tipps für Lehrer",
-        tipsText: "KI-Texte haben oft einheitliche Sätze, geschliffene Formulierungen und übermäßig genutzte Übergänge wie 'zum Schluss'.",
+        tipsText: "<ul><li><strong>Einheitliche Sätze:</strong> KI-Texte haben oft konsistente Satzlangen.</li><li><strong>Geschliffene Formulierungen:</strong> Achte auf zu perfekte Prosa.</li><li><strong>Übermäßig genutzte Übergänge:</strong> Suche nach Phrasen wie 'zum Schluss'.</li></ul>",
         footer: "Entwickelt zur Förderung ehrlicher Arbeit | <a href='mailto:your-email@example.com'>Kontaktieren Sie uns</a>",
         noText: "Bitte geben Sie einen Text zur Analyse ein.", aiLabel: "KI-Wahrscheinlichkeit:", likelyAI: "Wahrscheinlich KI-generiert",
         likelyHuman: "Wahrscheinlich menschlich geschrieben", compareResult: "Vergleich: Text 1 - {score1}%, Text 2 - {score2}%",
@@ -182,7 +280,7 @@
         prompt: "Collez le texte de l'élève pour détecter les devoirs générés par IA.", placeholder: "Collez le texte ici (ex. devoirs, essais)...",
         comparePlaceholder: "Collez un deuxième texte pour comparer...", analyze: "Analyser le texte", compare: "Comparer les textes",
         export: "Exporter les résultats", share: "Partager: 𝕏", clear: "Effacer", tipsTitle: "Conseils pour les enseignants",
-        tipsText: "Les textes IA ont souvent des phrases uniformes, des formulations soignées et des transitions surutilisées comme 'en conclusion'.",
+        tipsText: "<ul><li><strong>Phrases uniformes :</strong> Les textes IA ont souvent des longueurs de phrases constantes.</li><li><strong>Formulations soignées :</strong> Recherchez une prose trop parfaite.</li><li><strong>Transitions surutilisées :</strong> Repérez des expressions comme 'en conclusion'.</li></ul>",
         footer: "Conçu pour promouvoir un travail honnête | <a href='mailto:your-email@example.com'>Contactez-nous</a>",
         noText: "Veuillez entrer un texte à analyser.", aiLabel: "Probabilité IA :", likelyAI: "Probablement généré par IA",
         likelyHuman: "Probablement écrit par un humain", compareResult: "Comparaison : Texte 1 - {score1}%, Texte 2 - {score2}%",
@@ -194,7 +292,7 @@
         prompt: "Pega el texto del estudiante para detectar tareas generadas por IA.", placeholder: "Pega el texto aquí (ej. tareas, ensayos)...",
         comparePlaceholder: "Pega un segundo texto para comparar...", analyze: "Analizar texto", compare: "Comparar textos",
         export: "Exportar resultados", share: "Compartir: 𝕏", clear: "Limpiar", tipsTitle: "Consejos para maestros",
-        tipsText: "Los textos de IA suelen tener oraciones uniformes, frases pulidas y transiciones sobre utilizadas como 'en conclusión'.",
+        tipsText: "<ul><li><strong>Oraciones uniformes:</strong> El texto de IA suele tener longitudes de frases consistentes.</li><li><strong>Frases pulidas:</strong> Busca una prosa demasiado perfecta.</li><li><strong>Transiciones sobreutilizadas:</strong> Identifica frases como 'en conclusión'.</li></ul>",
         footer: "Creado para promover el trabajo honesto | <a href='mailto:your-email@example.com'>Contáctenos</a>",
         noText: "Por favor, ingrese un texto para analizar.", aiLabel: "Probabilidad de IA:", likelyAI: "Probablemente generado por IA",
         likelyHuman: "Probablemente escrito por humanos", compareResult: "Comparación: Texto 1 - {score1}%, Text 2 - {score2}%",
@@ -206,7 +304,7 @@
         prompt: "Вставте текст учня для виявлення вмісту, згенерованого ШІ.", placeholder: "Вставте текст сюди (наприклад, домашні завдання, есе)...",
         comparePlaceholder: "Вставте другий текст для порівняння...", analyze: "Аналізувати текст", compare: "Порівняти тексти",
         export: "Експортувати результати", share: "Поділитися: 𝕏", clear: "Очистити", tipsTitle: "Поради для вчителів",
-        tipsText: "Тексти ШІ часто мають однакові речення, відшліфовані фрази та надмірно вживані переходи, як-от 'на завершення'.",
+        tipsText: "<ul><li><strong>Однакові речення:</strong> Текст ШІ часто має постійну довжину речень.</li><li><strong>Відшліфовані фрази:</strong> Шукайте надто ідеальну прозу.</li><li><strong>Надмірні переходи:</strong> Звертайте увагу на фрази типу 'на завершення'.</li></ul>",
         footer: "Створено для підтримки чесної роботи | <a href='mailto:your-email@example.com'>Зв’яжіться з нами</a>",
         noText: "Будь ласка, введіть текст для аналізу.", aiLabel: "Ймовірність ШІ:", likelyAI: "Ймовірно згенеровано ШІ",
         likelyHuman: "Ймовірно написано людиною", compareResult: "Порівняння: Текст 1 - {score1}%, Текст 2 - {score2}%",
@@ -218,7 +316,7 @@
         prompt: "Вставьте текст ученика для выявления контента, созданного ИИ.", placeholder: "Вставьте текст сюда (например, домашние задания, эссе)...",
         comparePlaceholder: "Вставьте второй текст для сравнения...", analyze: "Анализировать текст", compare: "Сравнить тексты",
         export: "Экспортировать результаты", share: "Поделиться: 𝕏", clear: "Очистить", tipsTitle: "Советы для учителей",
-        tipsText: "Тексты от ИИ часто имеют одинаковые предложения, отшлифованные фразы и чрезмерно используемые переходы, такие как 'в заключение'.",
+        tipsText: "<ul><li><strong>Одинаковые предложения:</strong> Текст ИИ часто имеет постоянную длину предложений.</li><li><strong>Отшлифованные фразы:</strong> Ищите слишком идеальную прозу.</li><li><strong>Чрезмерно используемые переходы:</strong> Обратите внимание на фразы вроде 'в заключение'.</li></ul>",
         footer: "Создано для поддержки честной работы | <a href='mailto:your-email@example.com'>Свяжитесь с нами</a>",
         noText: "Пожалуйста, введите текст для анализа.", aiLabel: "Вероятность ИИ:", likelyAI: "Вероятно сгенерировано ИИ",
         likelyHuman: "Вероятно написано человеком", compareResult: "Сравнение: Текст 1 - {score1}%, Текст 2 - {score2}%",
@@ -242,7 +340,7 @@
       document.getElementById("shareBtn").innerHTML = t.share;
       document.getElementById("clearBtn").innerHTML = t.clear;
       document.querySelector(".sidebar h3").innerHTML = t.tipsTitle;
-      document.querySelector(".sidebar-content p").innerHTML = t.tipsText;
+      document.querySelector(".tips-box").innerHTML = t.tipsText + '<p><a href="blog.html">Read our Blog</a></p>';
       document.querySelector("footer p").innerHTML = t.footer;
       detectAI(); // Re-run if text exists
     }
