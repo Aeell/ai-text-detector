@@ -11,6 +11,8 @@
     gtag('config', 'G-FWR9G2XB2W');
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- FontAwesome CDN for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <!-- English SEO -->
   <meta name="description" content="Free AI Homework Detector with Word Counter, Repeating Words, and AI Text Checker - Detect AI-generated student work instantly for teachers, parents, and schools. Catch cheating now!">
   <meta name="keywords" content="AI homework detector, detect AI cheating, AI text checker, AI plagiarism tool, word counter, repeating words counter, sentence counter, readability score, teachers, parents, students, education technology, catch AI homework, free AI detection tool">
@@ -175,12 +177,8 @@
       text-align: left;
     }
     .icon {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      background-color: #28a745;
+      color: #28a745;
       margin-right: 8px;
-      vertical-align: middle;
     }
     footer {
       padding: 10px;
@@ -265,17 +263,17 @@
       <h3>Tips for Teachers</h3>
       <div class="tips-container">
         <div class="tip-item">
-          <span class="icon"></span>
+          <span class="icon"><i class="fas fa-check"></i></span>
           <h4>Uniform Sentences</h4>
           <p>AI text often has consistent sentence lengths.</p>
         </div>
         <div class="tip-item">
-          <span class="icon"></span>
+          <span class="icon"><i class="fas fa-check"></i></span>
           <h4>Polished Phrasing</h4>
           <p>Look for overly neat prose without errors.</p>
         </div>
         <div class="tip-item">
-          <span class="icon"></span>
+          <span class="icon"><i class="fas fa-check"></i></span>
           <h4>Overused Transitions</h4>
           <p>Spot phrases like 'in conclusion'.</p>
         </div>
@@ -393,9 +391,9 @@
       document.getElementById("clearBtn").innerHTML = t.clear;
       document.querySelector(".sidebar h3").innerHTML = t.tipsTitle;
       document.querySelector(".tips-container").innerHTML = `
-        <div class="tip-item"><span class="icon"></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[0].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[1]}</p></div>
-        <div class="tip-item"><span class="icon"></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[1].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[2]}</p></div>
-        <div class="tip-item"><span class="icon"></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[2].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[3]}</p></div>
+        <div class="tip-item"><span class="icon"><i class="fas fa-check"></i></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[0].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[1]}</p></div>
+        <div class="tip-item"><span class="icon"><i class="fas fa-check"></i></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[1].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[2]}</p></div>
+        <div class="tip-item"><span class="icon"><i class="fas fa-check"></i></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[2].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[3]}</p></div>
       `;
       document.querySelector("footer p").innerHTML = t.footer;
       detectAI(); // Re-run if text exists
