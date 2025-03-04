@@ -115,8 +115,12 @@
         answer = num1; // Ensure division is exact
         problem = `${answer * num2} ${op} ${num2} = ?`;
       } else {
+        switch (op) {
+          case '+': answer = num1 + num2; break;
+          case '-': answer = num1 - num2; break;
+          case '*': answer = num1 * num2; break;
+        }
         problem = `${num1} ${op} ${num2} = ?`;
-        answer = eval(`${num1} ${op} ${num2}`); // Basic eval for simplicity
       }
       document.getElementById('problemOutput').innerHTML = `${problem} <br> Answer: ${answer}`;
     }
