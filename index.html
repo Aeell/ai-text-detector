@@ -82,41 +82,43 @@
     h3 {
       color: #ddd;
     }
+    h4 {
+      margin: 0 0 5px;
+      color: #28a745;
+    }
     .container {
       display: flex;
       max-width: 1000px;
       margin: 20px auto;
       padding: 20px;
-      border-radius: 10px;
     }
     .input-section {
-      flex: 2;
+      flex: 1;
       padding-right: 20px;
-      text-align: center;
+      text-align: left;
     }
     .lang-toggle {
       margin-bottom: 10px;
     }
     textarea {
       width: 100%;
-      max-width: 600px;
+      max-width: 100%;
       height: 150px;
       padding: 15px;
       font-size: 16px;
-      background-color: #2c3e50;
-      color: #fff;
-      border: 1px solid #555;
+      background-color: #f5f5f5;
+      color: #333;
+      border: 1px solid #ccc;
       border-radius: 5px;
-      margin: 10px auto;
+      margin: 10px 0;
       resize: vertical;
-      box-shadow: none;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .button-group {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin: 10px 0;
-      justify-content: center;
     }
     button {
       padding: 10px 20px;
@@ -150,18 +152,32 @@
       color: #28a745;
     }
     .sidebar {
-      flex: 0 0 300px;
+      flex: 1;
       padding: 20px;
       background: #2c3e50;
       border-radius: 5px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     }
-    .tips-box {
-      border: 1px solid #28a745;
+    .tips-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .tip-item {
+      background-color: #f5f5f5;
+      color: #333;
       padding: 15px;
+      border: 1px solid #ccc;
       border-radius: 5px;
-      font-family: 'Open Sans', sans-serif;
-      color: #ddd;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .icon {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background-color: #28a745; /* Placeholder color */
+      margin-right: 10px;
+      vertical-align: middle;
     }
     footer {
       background-color: #2c3e50;
@@ -197,9 +213,11 @@
     @media (max-width: 768px) {
       .container { flex-direction: column; }
       .input-section { padding-right: 0; }
-      .sidebar { margin-top: 20px; flex: 1; }
+      .sidebar { margin-top: 20px; }
       textarea { width: 100%; }
       .button-group { flex-direction: column; }
+      .tips-container { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+      .tip-item { flex: 1 1 calc(50% - 5px); }
     }
   </style>
 </head>
@@ -243,14 +261,24 @@
     </div>
     <aside class="sidebar">
       <h3>Tips for Teachers</h3>
-      <div class="tips-box">
-        <ul>
-          <li><strong>Uniform Sentences:</strong> AI text often has consistent sentence lengths.</li>
-          <li><strong>Polished Phrasing:</strong> Look for overly neat prose without errors.</li>
-          <li><strong>Overused Transitions:</strong> Spot phrases like 'in conclusion'.</li>
-        </ul>
-        <p><a href="blog.html">Read our Blog</a></p>
+      <div class="tips-container">
+        <div class="tip-item">
+          <span class="icon"></span>
+          <h4>Uniform Sentences</h4>
+          <p>AI text often has consistent sentence lengths.</p>
+        </div>
+        <div class="tip-item">
+          <span class="icon"></span>
+          <h4>Polished Phrasing</h4>
+          <p>Look for overly neat prose without errors.</p>
+        </div>
+        <div class="tip-item">
+          <span class="icon"></span>
+          <h4>Overused Transitions</h4>
+          <p>Spot phrases like 'in conclusion'.</p>
+        </div>
       </div>
+      <p><a href="blog.html">Read our Blog</a></p>
     </aside>
   </div>
   <footer>
@@ -263,8 +291,8 @@
     const translations = {
       CZE: {
         title: "Detektor AI Úkolů", subtitle: "Pro učitele, rodiče a čestné studenty", banner: "Chyťte podvodníky s AI během několika sekund!",
-        prompt: "Vložte text studenta k odhalení AI generovaného obsahu.", placeholder: "Sem vložte text (např. domácí úkoly, eseje)...",
-        comparePlaceholder: "Sem vložte druhý text pro porovnání...", analyze: "Analyzovat text", compare: "Porovnat texty",
+        prompt: "Vložte text studenta k odhalení AI generovaného obsahu.", placeholder: "Paste text here (e.g., homework, essays)...",
+        comparePlaceholder: "Paste second text to compare...", analyze: "Analyzovat text", compare: "Porovnat texty",
         export: "Exportovat výsledky", share: "Sdílet: 𝕏", clear: "Vyčistit", tipsTitle: "Tipy pro učitele",
         tipsText: "<ul><li><strong>Jednotné věty:</strong> Text AI má často konzistentní délku vět.</li><li><strong>Vyleštěné fráze:</strong> Hledejte příliš úhlednou prózu bez chyb.</li><li><strong>Přepjaté přechody:</strong> Všímajte si frází jako 'závěrem'.</li></ul>",
         footer: "Vytvořeno pro podporu čestné práce | <a href='mailto:your-email@example.com'>Kontaktujte nás</a>",
@@ -287,8 +315,8 @@
       },
       DE: {
         title: "KI-Hausaufgabendetektor", subtitle: "Für Lehrer, Eltern und ehrliche Schüler", banner: "Fange KI-Betrüger in Sekunden!",
-        prompt: "Füge den Schülertext ein, um KI-generierte Hausaufgaben zu erkennen.", placeholder: "Text hier einfügen (z.B. Hausaufgaben, Aufsätze)...",
-        comparePlaceholder: "Zweiten Text zum Vergleich einfügen...", analyze: "Text analysieren", compare: "Texte vergleichen",
+        prompt: "Füge den Schülertext ein, um KI-generierte Hausaufgaben zu erkennen.", placeholder: "Paste text here (e.g., homework, essays)...",
+        comparePlaceholder: "Paste second text to compare...", analyze: "Text analysieren", compare: "Texte vergleichen",
         export: "Ergebnisse exportieren", share: "Teilen: 𝕏", clear: "Löschen", tipsTitle: "Tipps für Lehrer",
         tipsText: "<ul><li><strong>Einheitliche Sätze:</strong> KI-Texte haben oft konsistente Satzlangen.</li><li><strong>Geschliffene Formulierungen:</strong> Achte auf zu perfekte Prosa.</li><li><strong>Übermäßig genutzte Übergänge:</strong> Suche nach Phrasen wie 'zum Schluss'.</li></ul>",
         footer: "Entwickelt zur Förderung ehrlicher Arbeit | <a href='mailto:your-email@example.com'>Kontaktieren Sie uns</a>",
@@ -299,8 +327,8 @@
       },
       FR: {
         title: "Détecteur de Devoirs IA", subtitle: "Pour les enseignants, les parents et les élèves honnêtes", banner: "Attrapez les tricheurs IA en quelques secondes !",
-        prompt: "Collez le texte de l'élève pour détecter les devoirs générés par IA.", placeholder: "Collez le texte ici (ex. devoirs, essais)...",
-        comparePlaceholder: "Collez un deuxième texte pour comparer...", analyze: "Analyser le texte", compare: "Comparer les textes",
+        prompt: "Collez le texte de l'élève pour détecter les devoirs générés par IA.", placeholder: "Paste text here (e.g., homework, essays)...",
+        comparePlaceholder: "Paste second text to compare...", analyze: "Analyser le texte", compare: "Comparer les textes",
         export: "Exporter les résultats", share: "Partager: 𝕏", clear: "Effacer", tipsTitle: "Conseils pour les enseignants",
         tipsText: "<ul><li><strong>Phrases uniformes :</strong> Les textes IA ont souvent des longueurs de phrases constantes.</li><li><strong>Formulations soignées :</strong> Recherchez une prose trop parfaite.</li><li><strong>Transitions surutilisées :</strong> Repérez des expressions comme 'en conclusion'.</li></ul>",
         footer: "Conçu pour promouvoir un travail honnête | <a href='mailto:your-email@example.com'>Contactez-nous</a>",
@@ -311,8 +339,8 @@
       },
       ES: {
         title: "Detector de Tareas IA", subtitle: "Para maestros, padres y estudiantes honestos", banner: "¡Atrapa a los tramposos con IA en segundos!",
-        prompt: "Pega el texto del estudiante para detectar tareas generadas por IA.", placeholder: "Pega el texto aquí (ej. tareas, ensayos)...",
-        comparePlaceholder: "Pega un segundo texto para comparar...", analyze: "Analizar texto", compare: "Comparar textos",
+        prompt: "Pega el texto del estudiante para detectar tareas generadas por IA.", placeholder: "Paste text here (e.g., homework, essays)...",
+        comparePlaceholder: "Paste second text to compare...", analyze: "Analizar texto", compare: "Comparar textos",
         export: "Exportar resultados", share: "Compartir: 𝕏", clear: "Limpiar", tipsTitle: "Consejos para maestros",
         tipsText: "<ul><li><strong>Oraciones uniformes:</strong> El texto de IA suele tener longitudes de frases consistentes.</li><li><strong>Frases pulidas:</strong> Busca una prosa demasiado perfecta.</li><li><strong>Transiciones sobreutilizadas:</strong> Identifica frases como 'en conclusión'.</li></ul>",
         footer: "Creado para promover el trabajo honesto | <a href='mailto:your-email@example.com'>Contáctenos</a>",
@@ -323,8 +351,8 @@
       },
       UK: {
         title: "Детектор домашніх завдань ШІ", subtitle: "Для вчителів, батьків та чесних учнів", banner: "Ловіть шахраїв ШІ за секунди!",
-        prompt: "Вставте текст учня для виявлення вмісту, згенерованого ШІ.", placeholder: "Вставте текст сюди (наприклад, домашні завдання, есе)...",
-        comparePlaceholder: "Вставте другий текст для порівняння...", analyze: "Аналізувати текст", compare: "Порівняти тексти",
+        prompt: "Вставте текст учня для виявлення вмісту, згенерованого ШІ.", placeholder: "Paste text here (e.g., homework, essays)...",
+        comparePlaceholder: "Paste second text to compare...", analyze: "Аналізувати текст", compare: "Порівняти тексти",
         export: "Експортувати результати", share: "Поділитися: 𝕏", clear: "Очистити", tipsTitle: "Поради для вчителів",
         tipsText: "<ul><li><strong>Однакові речення:</strong> Текст ШІ часто має постійну довжину речень.</li><li><strong>Відшліфовані фрази:</strong> Шукайте надто ідеальну прозу.</li><li><strong>Надмірні переходи:</strong> Звертайте увагу на фрази типу 'на завершення'.</li></ul>",
         footer: "Створено для підтримки чесної роботи | <a href='mailto:your-email@example.com'>Зв’яжіться з нами</a>",
@@ -335,8 +363,8 @@
       },
       RU: {
         title: "Детектор домашних заданий ИИ", subtitle: "Для учителей, родителей и честных учеников", banner: "Лови мошенников с ИИ за секунды!",
-        prompt: "Вставьте текст ученика для выявления контента, созданного ИИ.", placeholder: "Вставьте текст сюда (например, домашние задания, эссе)...",
-        comparePlaceholder: "Вставьте второй текст для сравнения...", analyze: "Анализировать текст", compare: "Сравнить тексты",
+        prompt: "Вставьте текст ученика для выявления контента, созданного ИИ.", placeholder: "Paste text here (e.g., homework, essays)...",
+        comparePlaceholder: "Paste second text to compare...", analyze: "Анализировать текст", compare: "Сравнить тексты",
         export: "Экспортировать результаты", share: "Поделиться: 𝕏", clear: "Очистить", tipsTitle: "Советы для учителей",
         tipsText: "<ul><li><strong>Одинаковые предложения:</strong> Текст ИИ часто имеет постоянную длину предложений.</li><li><strong>Отшлифованные фразы:</strong> Ищите слишком идеальную прозу.</li><li><strong>Чрезмерно используемые переходы:</strong> Обратите внимание на фразы вроде 'в заключение'.</li></ul>",
         footer: "Создано для поддержки честной работы | <a href='mailto:your-email@example.com'>Свяжитесь с нами</a>",
@@ -362,7 +390,11 @@
       document.getElementById("shareBtn").innerHTML = t.share;
       document.getElementById("clearBtn").innerHTML = t.clear;
       document.querySelector(".sidebar h3").innerHTML = t.tipsTitle;
-      document.querySelector(".tips-box").innerHTML = t.tipsText + '<p><a href="blog.html">Read our Blog</a></p>';
+      document.querySelector(".tips-container").innerHTML = `
+        <div class="tip-item"><span class="icon"></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[0].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[1]}</p></div>
+        <div class="tip-item"><span class="icon"></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[1].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[2]}</p></div>
+        <div class="tip-item"><span class="icon"></span><h4>${t.tipsText.match(/<li><strong>([^<]+)<\/strong>/g)[2].replace('<li><strong>', '').replace('</strong>', '')}</h4><p>${t.tipsText.match(/<li><strong>[^<]+<\/strong>: (.*?)<\/li>/)[3]}</p></div>
+      `;
       document.querySelector("footer p").innerHTML = t.footer;
       detectAI(); // Re-run if text exists
     }
