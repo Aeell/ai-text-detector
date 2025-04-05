@@ -1,29 +1,45 @@
-# 🧠 AI Text Detector & Tools
+# AI Text Detector 🧠📄
 
-A modern multilingual web app that detects AI-generated text and provides various natural language tools for Czech and English users. Built with Node.js, React, PostgreSQL, and Docker.
+A multilingual web app offering AI-generated content detection and other text tools (translation, summarization, grammar checking) for users in the Czech Republic.
 
-## ✨ Features
+## 🔧 Features
 
-- ✅ AI Content Detection (EN/CZ)
-- ✍️ Text Generator (EN/CZ)
-- 🔁 Translator (EN ↔ CZ)
-- 📚 Text Summarizer (EN/CZ)
-- 📝 Czech Grammar & Style Checker
+- 🇨🇿 Czech/English interface
+- 🤖 AI Content Detector
+- 📝 Text Generator (CZ/EN)
+- 🌍 Translator (EN <> CS)
+- 📰 Summarizer
+- 🕵️ Grammar & Style Checker (CZ)
 - 🖼️ Simple Image Generator
-- 📱 QR Code Generator
+- 🔲 QR Code Generator
 
-## 🛠️ Tech Stack
+## 🏗️ Tech Stack
 
-- **Frontend:** React (Vite), Tailwind CSS
-- **Backend:** Node.js, Express
-- **Database:** PostgreSQL
-- **AI Integration:** OpenAI / Local models
-- **Containerized:** Docker
-- **Dev Environment:** Pop!_OS, Cursor AI / VS Code
+- **Frontend**: React + Tailwind CSS
+- **Backend**: Node.js + Express
+- **Database**: PostgreSQL
+- **Other**: Docker, OpenAI API, Google Translate API, custom AI/ML models
 
-## 🧪 Getting Started
+## 🚀 Getting Started
 
-1. **Clone the Repo**
-   ```bash
-   git clone https://github.com/your-username/ai-text-detector.git
-   cd ai-text-detector
+```bash
+git clone https://github.com/Aeell/ai-text-detector.git
+cd ai-text-detector
+npm install
+npm run dev
+```
+
+## 📁 Documentation
+
+See the [`documentation/`](./documentation) folder for details on:
+- Architecture
+- Tools
+- API routes
+- AI models
+- Language support
+- UI mockups
+- Roadmap
+
+## 📜 License
+
+MIT
