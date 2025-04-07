@@ -78,9 +78,18 @@ class App {
         const element = document.getElementById(id);
         if (element) {
           new ErrorBoundary(element, {
-            onError: (error) => {
-              this.debug.error(`Error in ${name}:`, error);
-              this.analytics.trackError(error, `boundary_${id}`);
+            onError: (error, componentStack) => {
+              const errorDetails = {
+                message: error.message,
+                stack: error.stack,
+                componentStack: componentStack,
+                sectionId: id,
+                sectionName: name,
+                url: window.location.href,
+                timestamp: new Date().toISOString()
+              };
+              this.debug.error(`Error caught by ErrorBoundary in ${name}:`, errorDetails);
+              this.analytics.trackError(error, `boundary_${id}`, errorDetails);
             },
             onReset: () => {
               this.debug.log(`Error boundary for ${name} reset`);
