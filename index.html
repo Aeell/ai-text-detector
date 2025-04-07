@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <base href="/ai-text-detector/">
   <!-- Critical CSS -->
   <style>
     /* Inline critical CSS here */
@@ -164,9 +165,12 @@
       const { initApp } = await import('./main.js');
       if (initApp) {
         initApp();
+      } else {
+        console.error('initApp not found in main.js');
       }
     } catch (error) {
       console.error('Error loading application:', error);
+      document.body.innerHTML = '<h1>Error loading application. Please try refreshing the page.</h1>';
     }
   </script>
 </body>

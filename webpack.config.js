@@ -13,7 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     clean: true,
-    publicPath: ''
+    publicPath: '/ai-text-detector/'
   },
   module: {
     rules: [
@@ -31,7 +31,12 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '/ai-text-detector/'
+            }
+          },
           'css-loader',
           'postcss-loader'
         ]
@@ -54,21 +59,24 @@ module.exports = {
       filename: 'index.html',
       chunks: ['main'],
       minify: false,
-      scriptLoading: 'module'
+      scriptLoading: 'module',
+      base: '/ai-text-detector/'
     }),
     new HtmlWebpackPlugin({
       template: './blog.html',
       filename: 'blog.html',
       chunks: ['main'],
       minify: false,
-      scriptLoading: 'module'
+      scriptLoading: 'module',
+      base: '/ai-text-detector/'
     }),
     new HtmlWebpackPlugin({
       template: './educators.html',
       filename: 'educators.html',
       chunks: ['main'],
       minify: false,
-      scriptLoading: 'module'
+      scriptLoading: 'module',
+      base: '/ai-text-detector/'
     }),
     new CopyWebpackPlugin({
       patterns: [
