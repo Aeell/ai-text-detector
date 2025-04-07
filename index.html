@@ -7,19 +7,14 @@
     /* Inline critical CSS here */
     :root {
       --primary-color: #2c3e50;
-      --text-color: #fff;
-      --background-color: #1a1a1a;
+      --text-color: #333;
+      --background-color: #ffffff;
     }
     body {
       margin: 0;
       padding: 20px;
       background-color: var(--background-color);
       color: var(--text-color);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    body.loaded {
-      opacity: 1;
     }
     .loading-spinner {
       position: fixed;
@@ -29,19 +24,17 @@
     }
   </style>
   
+  <!-- CSS loading -->
+  <link rel="stylesheet" href="/ai-text-detector/main.css">
+  <link rel="stylesheet" href="/ai-text-detector/dark-theme.css">
+  <link rel="stylesheet" href="/ai-text-detector/responsive.css">
+  
+  <!-- Async Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
   <!-- Preload critical assets -->
   <link rel="preload" href="/ai-text-detector/main.css" as="style">
   <link rel="preload" href="/ai-text-detector/main.js" as="script">
-  
-  <!-- Async CSS loading -->
-  <link rel="stylesheet" href="/ai-text-detector/main.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="/ai-text-detector/dark-theme.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="/ai-text-detector/responsive.css" media="print" onload="this.media='all'">
-  
-  <!-- Async Font Awesome -->
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
-        media="print" onload="this.media='all'">
   
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FWR9G2XB2W"></script>
@@ -167,42 +160,14 @@
     <p>Built to promote honest work | <a href="mailto:your-email@example.com">Contact Us</a></p>
   </footer>
   
-  <!-- Lazy load JavaScript modules -->
+  <!-- JavaScript loading -->
   <script type="module">
-    // Import main module
-    import { initApp } from '/ai-text-detector/main.js';
-    
-    // Load non-critical modules
-    const loadModule = async (path) => {
-      try {
-        const module = await import(`/ai-text-detector${path}`);
-        return module;
-      } catch (error) {
-        console.error(`Error loading module ${path}:`, error);
-        return null;
-      }
-    };
+    import { initApp } from './main.js';
     
     // Initialize app when DOM is loaded
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Load non-critical modules in parallel
-      const [utils, debug] = await Promise.all([
-        loadModule('/utils.js'),
-        loadModule('/debug.js')
-      ]);
-      
-      // Initialize app
+    document.addEventListener('DOMContentLoaded', () => {
       initApp();
-      
-      // Remove loading spinner and show content
-      document.body.classList.add('loaded');
-      document.querySelector('.loading-spinner').remove();
     });
-  </script>
-  
-  <!-- Fallback for browsers without module support -->
-  <script nomodule>
-    document.body.innerHTML = 'Please use a modern browser that supports JavaScript modules.';
   </script>
 </body>
 </html>

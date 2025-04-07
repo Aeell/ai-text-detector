@@ -27,7 +27,12 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '/ai-text-detector/'
+            }
+          },
           'css-loader',
           'postcss-loader'
         ]
@@ -48,17 +53,20 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './index.html',
       filename: 'index.html',
-      chunks: ['main']
+      chunks: ['main'],
+      minify: false
     }),
     new HtmlWebpackPlugin({
       template: './blog.html',
       filename: 'blog.html',
-      chunks: ['main']
+      chunks: ['main'],
+      minify: false
     }),
     new HtmlWebpackPlugin({
       template: './educators.html',
       filename: 'educators.html',
-      chunks: ['main']
+      chunks: ['main'],
+      minify: false
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -69,6 +77,10 @@ module.exports = {
         {
           from: '_headers',
           to: '_headers'
+        },
+        {
+          from: '*.css',
+          to: '[name][ext]'
         }
       ]
     })
