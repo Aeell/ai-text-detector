@@ -10,6 +10,7 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'js/[name].[contenthash].js',
+      publicPath: isProduction ? '/ai-text-detector/' : '/',
       clean: true
     },
     devtool: isProduction ? 'source-map' : 'eval-source-map',
@@ -71,7 +72,8 @@ module.exports = (env, argv) => {
         template: './src/html/index.html',
         filename: 'index.html',
         minify: isProduction,
-        favicon: './src/favicon.ico'
+        favicon: './src/favicon.ico',
+        publicPath: isProduction ? '/ai-text-detector/' : '/'
       }),
       ...(isProduction ? [new MiniCssExtractPlugin({
         filename: 'css/[name].[contenthash].css'
