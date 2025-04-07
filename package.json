@@ -1,65 +1,40 @@
 {
   "name": "ai-text-detector",
   "version": "1.0.0",
-  "description": "AI-generated text detection tool",
-  "main": "index.js",
+  "description": "Advanced AI text detection tool with multilingual support",
+  "main": "src/js/app.js",
+  "type": "module",
   "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "start": "webpack serve --mode development",
-    "build": "webpack --mode production",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "lint": "eslint src/**/*.js",
+    "format": "prettier --write src/**/*.{js,css,html}",
+    "analyze": "vite-bundle-analyzer"
   },
-  "jest": {
-    "setupFilesAfterEnv": [
-      "<rootDir>/jest.setup.js"
-    ],
-    "testEnvironment": "jsdom",
-    "moduleNameMapper": {
-      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
-    },
-    "transform": {
-      "^.+\\.(js|jsx)$": "babel-jest"
-    },
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!src/index.js"
-    ]
-  },
+  "keywords": [
+    "ai",
+    "text-detection",
+    "nlp",
+    "machine-learning"
+  ],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
-    "compromise": "^14.9.0",
-    "express": "^4.18.2",
-    "natural": "^6.5.0",
-    "sentiment": "^5.0.2"
+    "natural": "^6.10.4",
+    "compromise": "^14.10.1",
+    "languagedetect": "^2.0.0",
+    "marked": "^11.1.1",
+    "dompurify": "^3.0.8"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.9",
-    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-modules-commonjs": "^7.26.3",
-    "@babel/plugin-transform-modules-umd": "^7.25.9",
-    "@babel/plugin-transform-runtime": "^7.26.10",
-    "@babel/preset-env": "^7.22.9",
-    "@babel/runtime": "^7.27.0",
-    "babel-jest": "^29.6.1",
-    "babel-loader": "^9.1.3",
-    "copy-webpack-plugin": "^11.0.0",
-    "css-loader": "^6.8.1",
-    "cssnano": "^7.0.6",
-    "gh-pages": "^6.0.0",
-    "html-webpack-plugin": "^5.5.3",
-    "identity-obj-proxy": "^3.0.0",
-    "jest": "^29.6.1",
-    "jest-environment-jsdom": "^29.6.1",
-    "mini-css-extract-plugin": "^2.7.6",
-    "postcss": "^8.4.31",
-    "postcss-loader": "^7.3.3",
-    "postcss-preset-env": "^9.6.0",
-    "style-loader": "^3.3.3",
-    "webpack": "^5.88.2",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
-  },
-  "homepage": "https://aeell.github.io/ai-text-detector"
+    "vite": "^5.0.11",
+    "vitest": "^1.2.1",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.2",
+    "vite-bundle-analyzer": "^0.8.1",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1"
+  }
 }

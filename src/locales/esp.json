@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "Detector de Texto IA",
+    "description": "Detecta texto generado por IA con análisis avanzado",
+    "version": "1.0.0"
+  },
+  "nav": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "settings": "Configuración",
+    "help": "Ayuda"
+  },
+  "input": {
+    "placeholder": "Ingresa o pega tu texto aquí...",
+    "analyze": "Analizar Texto",
+    "clear": "Limpiar",
+    "compare": "Comparar Textos",
+    "save": "Guardar",
+    "export": "Exportar",
+    "share": "Compartir"
+  },
+  "analysis": {
+    "title": "Resultados del Análisis",
+    "aiProbability": "Probabilidad de IA",
+    "confidence": "Nivel de Confianza",
+    "wordCount": "Cantidad de Palabras",
+    "textLength": "Longitud del Texto",
+    "language": "Idioma Detectado",
+    "patterns": {
+      "title": "Patrones Detectados",
+      "repetition": "Frases Repetitivas",
+      "formalPhrases": "Lenguaje Formal",
+      "complexStructures": "Estructuras Complejas",
+      "transitions": "Palabras de Transición"
+    },
+    "metrics": {
+      "title": "Métricas del Texto",
+      "vocabularyDiversity": "Diversidad de Vocabulario",
+      "sentenceLength": "Longitud Promedio de Oraciones",
+      "formalityScore": "Nivel de Formalidad",
+      "coherence": "Coherencia del Texto"
+    }
+  },
+  "comparison": {
+    "title": "Comparación de Textos",
+    "text1": "Texto 1",
+    "text2": "Texto 2",
+    "similarity": "Puntuación de Similitud",
+    "differences": "Diferencias Clave"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "theme": {
+      "title": "Tema",
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Sistema"
+    },
+    "accessibility": {
+      "title": "Accesibilidad",
+      "highContrast": "Alto Contraste",
+      "fontSize": "Tamaño de Fuente",
+      "reducedMotion": "Movimiento Reducido",
+      "textToSpeech": "Texto a Voz"
+    },
+    "advanced": {
+      "title": "Configuración Avanzada",
+      "debugMode": "Modo de Depuración",
+      "apiEndpoint": "Punto Final de API",
+      "cacheSize": "Tamaño de Caché"
+    }
+  },
+  "errors": {
+    "general": "Ocurrió un error",
+    "network": "Error de red",
+    "invalidInput": "Entrada inválida",
+    "tooShort": "Texto demasiado corto",
+    "unsupportedLanguage": "Idioma no soportado",
+    "retry": "Intentar de Nuevo"
+  },
+  "tooltips": {
+    "aiProbability": "Probabilidad de que el texto haya sido generado por IA",
+    "confidence": "Qué tan seguros estamos del análisis",
+    "vocabularyDiversity": "Variedad de palabras únicas utilizadas",
+    "coherence": "Qué tan bien fluye el texto y conecta ideas"
+  },
+  "notifications": {
+    "analysisSaved": "Análisis guardado exitosamente",
+    "textCopied": "Texto copiado al portapapeles",
+    "exportComplete": "Exportación completada",
+    "shareSuccess": "Compartido exitosamente"
+  },
+  "about": {
+    "description": "Esta herramienta utiliza algoritmos avanzados para detectar texto generado por IA",
+    "features": {
+      "title": "Características",
+      "multilingual": "Soporte Multilingüe",
+      "realTime": "Análisis en Tiempo Real",
+      "detailed": "Métricas Detalladas",
+      "comparison": "Comparación de Textos"
+    },
+    "privacy": {
+      "title": "Privacidad",
+      "noStorage": "No almacenamos tu texto",
+      "localAnalysis": "El análisis ocurre localmente",
+      "secure": "Seguro y privado"
+    }
+  },
+  "help": {
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "accuracy": "¿Qué tan preciso es?",
+      "supported": "¿Qué idiomas son soportados?",
+      "privacy": "¿Mi texto es privado?",
+      "works": "¿Cómo funciona?"
+    },
+    "contact": {
+      "title": "Contáctanos",
+      "support": "Soporte",
+      "feedback": "Comentarios",
+      "report": "Reportar Problema"
+    }
+  }
+} 

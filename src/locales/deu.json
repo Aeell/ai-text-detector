@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "KI-Text-Detektor",
+    "description": "Erkennen Sie KI-generierten Text mit fortgeschrittener Analyse",
+    "version": "1.0.0"
+  },
+  "nav": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "settings": "Einstellungen",
+    "help": "Hilfe"
+  },
+  "input": {
+    "placeholder": "Text hier eingeben oder einfügen...",
+    "analyze": "Text analysieren",
+    "clear": "Löschen",
+    "compare": "Texte vergleichen",
+    "save": "Speichern",
+    "export": "Exportieren",
+    "share": "Teilen"
+  },
+  "analysis": {
+    "title": "Analyseergebnisse",
+    "aiProbability": "KI-Wahrscheinlichkeit",
+    "confidence": "Konfidenzgrad",
+    "wordCount": "Wortanzahl",
+    "textLength": "Textlänge",
+    "language": "Erkannte Sprache",
+    "patterns": {
+      "title": "Erkannte Muster",
+      "repetition": "Wiederholte Phrasen",
+      "formalPhrases": "Formelle Sprache",
+      "complexStructures": "Komplexe Strukturen",
+      "transitions": "Überleitungswörter"
+    },
+    "metrics": {
+      "title": "Textmetriken",
+      "vocabularyDiversity": "Wortschatzvielfalt",
+      "sentenceLength": "Durchschnittliche Satzlänge",
+      "formalityScore": "Formalitätsgrad",
+      "coherence": "Textkohärenz"
+    }
+  },
+  "comparison": {
+    "title": "Textvergleich",
+    "text1": "Text 1",
+    "text2": "Text 2",
+    "similarity": "Ähnlichkeitswert",
+    "differences": "Hauptunterschiede"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "theme": {
+      "title": "Design",
+      "light": "Hell",
+      "dark": "Dunkel",
+      "system": "System"
+    },
+    "accessibility": {
+      "title": "Barrierefreiheit",
+      "highContrast": "Hoher Kontrast",
+      "fontSize": "Schriftgröße",
+      "reducedMotion": "Reduzierte Animation",
+      "textToSpeech": "Text-zu-Sprache"
+    },
+    "advanced": {
+      "title": "Erweiterte Einstellungen",
+      "debugMode": "Debug-Modus",
+      "apiEndpoint": "API-Endpunkt",
+      "cacheSize": "Cache-Größe"
+    }
+  },
+  "errors": {
+    "general": "Ein Fehler ist aufgetreten",
+    "network": "Netzwerkfehler",
+    "invalidInput": "Ungültige Eingabe",
+    "tooShort": "Text zu kurz",
+    "unsupportedLanguage": "Sprache nicht unterstützt",
+    "retry": "Erneut versuchen"
+  },
+  "tooltips": {
+    "aiProbability": "Wahrscheinlichkeit, dass der Text von einer KI generiert wurde",
+    "confidence": "Wie sicher wir mit der Analyse sind",
+    "vocabularyDiversity": "Vielfalt der verwendeten einzigartigen Wörter",
+    "coherence": "Wie gut der Text fließt und Ideen verbindet"
+  },
+  "notifications": {
+    "analysisSaved": "Analyse erfolgreich gespeichert",
+    "textCopied": "Text in die Zwischenablage kopiert",
+    "exportComplete": "Export abgeschlossen",
+    "shareSuccess": "Erfolgreich geteilt"
+  },
+  "about": {
+    "description": "Dieses Tool verwendet fortgeschrittene Algorithmen zur Erkennung von KI-generiertem Text",
+    "features": {
+      "title": "Funktionen",
+      "multilingual": "Mehrsprachige Unterstützung",
+      "realTime": "Echtzeit-Analyse",
+      "detailed": "Detaillierte Metriken",
+      "comparison": "Textvergleich"
+    },
+    "privacy": {
+      "title": "Datenschutz",
+      "noStorage": "Wir speichern Ihren Text nicht",
+      "localAnalysis": "Die Analyse erfolgt lokal",
+      "secure": "Sicher und privat"
+    }
+  },
+  "help": {
+    "faq": {
+      "title": "Häufige Fragen",
+      "accuracy": "Wie genau ist es?",
+      "supported": "Welche Sprachen werden unterstützt?",
+      "privacy": "Ist mein Text privat?",
+      "works": "Wie funktioniert es?"
+    },
+    "contact": {
+      "title": "Kontakt",
+      "support": "Support",
+      "feedback": "Feedback",
+      "report": "Problem melden"
+    }
+  }
+} 
