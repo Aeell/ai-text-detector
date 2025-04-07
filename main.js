@@ -1,5 +1,67 @@
 // main.js - Entry point for AI Text Detector application
 
+// Import required modules
+import { AIDetector } from './ai-detector.js';
+import { UIController } from './ui-controller.js';
+import { Utils } from './utils.js';
+import { Debug } from './debug.js';
+
+// Register service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful');
+        
+        // Handle updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              // New version available
+              if (confirm('New version available! Reload to update?')) {
+                window.location.reload();
+              }
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.error('ServiceWorker registration failed:', error);
+      });
+  });
+}
+
+// Initialize IndexedDB
+let db;
+
+async function initDB() {
+  try {
+    db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open('AIDetectorDB', 1);
+      
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => resolve(request.result);
+      
+      request.onupgradeneeded = event => {
+        const db = event.target.result;
+        
+        if (!db.objectStoreNames.contains('pending')) {
+          db.createObjectStore('pending', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('results')) {
+          db.createObjectStore('results', { keyPath: 'id' });
+        }
+      };
+    });
+    
+    console.log('IndexedDB initialized');
+  } catch (error) {
+    console.error('Error initializing IndexedDB:', error);
+  }
+}
+
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize the application
@@ -96,3 +158,242 @@ function checkDarkModePreference() {
     }
   }
 }
+
+// Initialize theme
+function initTheme() {
+  const theme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  updateThemeIcon(theme);
+}
+
+// Update theme icon
+function updateThemeIcon(theme) {
+  const themeIcon = document.querySelector('#themeToggle i');
+  themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+// Toggle theme
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon(newTheme);
+}
+
+// Initialize application with offline support
+async function initApp() {
+  // Initialize IndexedDB
+  await initDB();
+  
+  // Initialize theme
+  initTheme();
+  
+  // Add theme toggle listener
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', toggleTheme);
+  
+  // Initialize UI components
+  const ui = new UIController();
+  
+  // Initialize AI detector
+  const detector = new AIDetector();
+  
+  // Add analyze button listener with offline support
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  analyzeBtn.addEventListener('click', async () => {
+    const text = document.getElementById('inputText').value;
+    
+    try {
+      const result = await analyzeText(text);
+      ui.displayResults(result);
+    } catch (error) {
+      if (!navigator.onLine) {
+        // Store analysis request for later
+        await storeOfflineAnalysis(text);
+        ui.showOfflineMessage();
+      } else {
+        console.error('Error analyzing text:', error);
+        ui.showError(ui.resultDiv, 'Error analyzing text. Please try again.');
+      }
+    }
+  });
+  
+  // Add compare button listener
+  const compareBtn = document.getElementById('compareBtn');
+  compareBtn.addEventListener('click', () => {
+    const text1 = document.getElementById('inputText').value;
+    const text2 = document.getElementById('compareText').value;
+    const result = detector.compareTexts(text1, text2);
+    ui.displayCompareResults(result);
+  });
+  
+  // Add export button listener
+  const exportBtn = document.getElementById('exportBtn');
+  exportBtn.addEventListener('click', () => {
+    ui.exportResults();
+  });
+  
+  // Add clear button listener
+  const clearBtn = document.getElementById('clearBtn');
+  clearBtn.addEventListener('click', () => {
+    ui.clearAll();
+  });
+  
+  // Add share button listener
+  const shareBtn = document.getElementById('shareBtn');
+  shareBtn.addEventListener('click', () => {
+    ui.shareResults();
+  });
+  
+  // Initialize debug mode if needed
+  if (process.env.NODE_ENV === 'development') {
+    Debug.init();
+  }
+  
+  // Listen for service worker messages
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data.type === 'analysis-complete') {
+      ui.displayResults(event.data.result);
+    }
+  });
+}
+
+// Helper function to analyze text
+async function analyzeText(text) {
+  if (!navigator.onLine) {
+    throw new Error('Offline');
+  }
+  
+  const detector = new AIDetector();
+  return detector.analyzeTextDetailed(text);
+}
+
+// Store analysis request for offline processing
+async function storeOfflineAnalysis(text) {
+  const analysis = {
+    id: Date.now(),
+    text,
+    timestamp: Date.now()
+  };
+  
+  const transaction = db.transaction(['pending'], 'readwrite');
+  const store = transaction.objectStore('pending');
+  
+  await store.add(analysis);
+  
+  // Request background sync
+  if ('serviceWorker' in navigator && 'SyncManager' in window) {
+    const registration = await navigator.serviceWorker.ready;
+    await registration.sync.register('analyze-text');
+  }
+}
+
+// Export for testing
+export { initTheme, toggleTheme, analyzeText };
+
+// Performance monitoring
+const performanceMetrics = {
+  firstPaint: 0,
+  firstContentfulPaint: 0,
+  domInteractive: 0,
+  loadComplete: 0
+};
+
+// Measure performance metrics
+function measurePerformance() {
+  const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+      if (entry.name === 'first-paint') {
+        performanceMetrics.firstPaint = entry.startTime;
+      }
+      if (entry.name === 'first-contentful-paint') {
+        performanceMetrics.firstContentfulPaint = entry.startTime;
+      }
+    }
+  });
+  
+  observer.observe({ entryTypes: ['paint'] });
+  
+  window.addEventListener('DOMContentLoaded', () => {
+    performanceMetrics.domInteractive = performance.now();
+  });
+  
+  window.addEventListener('load', () => {
+    performanceMetrics.loadComplete = performance.now();
+    logPerformanceMetrics();
+  });
+}
+
+// Log performance metrics
+function logPerformanceMetrics() {
+  console.log('Performance Metrics:', {
+    'First Paint': Math.round(performanceMetrics.firstPaint) + 'ms',
+    'First Contentful Paint': Math.round(performanceMetrics.firstContentfulPaint) + 'ms',
+    'DOM Interactive': Math.round(performanceMetrics.domInteractive) + 'ms',
+    'Load Complete': Math.round(performanceMetrics.loadComplete) + 'ms'
+  });
+}
+
+// Initialize performance monitoring
+measurePerformance();
+
+// Optimize resource loading
+function optimizeResourceLoading() {
+  // Preload critical resources
+  const preloadLinks = [
+    { rel: 'preload', as: 'style', href: '/main.css' },
+    { rel: 'preload', as: 'script', href: '/ai-detector.js' },
+    { rel: 'preload', as: 'font', href: '/fonts/main-font.woff2', crossorigin: 'anonymous' }
+  ];
+  
+  preloadLinks.forEach(link => {
+    const linkEl = document.createElement('link');
+    Object.assign(linkEl, link);
+    document.head.appendChild(linkEl);
+  });
+  
+  // Lazy load non-critical resources
+  const lazyResources = [
+    { type: 'script', src: '/analytics.js' },
+    { type: 'script', src: '/feedback.js' },
+    { type: 'style', href: '/print.css', media: 'print' }
+  ];
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        loadResource(entry.target.dataset.resource);
+        observer.unobserve(entry.target);
+      }
+    });
+  });
+  
+  lazyResources.forEach(resource => {
+    const placeholder = document.createElement('div');
+    placeholder.dataset.resource = JSON.stringify(resource);
+    document.body.appendChild(placeholder);
+    observer.observe(placeholder);
+  });
+}
+
+// Load a resource dynamically
+function loadResource(resourceJson) {
+  const resource = JSON.parse(resourceJson);
+  const element = document.createElement(resource.type === 'script' ? 'script' : 'link');
+  
+  if (resource.type === 'script') {
+    element.src = resource.src;
+    element.async = true;
+  } else {
+    element.rel = 'stylesheet';
+    element.href = resource.href;
+    if (resource.media) element.media = resource.media;
+  }
+  
+  document.head.appendChild(element);
+}
+
+// Initialize optimizations
+optimizeResourceLoading();

@@ -104,66 +104,257 @@ const translations = {
   }
 };
 
-/**
- * Initialize the UI when the document is loaded
- */
-document.addEventListener('DOMContentLoaded', function() {
-  // Set default language
-  switchLang("ENG");
+export class UIController {
+  constructor() {
+    this.currentLang = "ENG";
+    this.translations = {
+      ENG: {
+        title: "AI Text Detector",
+        subtitle: "Analyze text for AI-generated content",
+        banner: "Switch theme for better readability",
+        prompt: "Enter or paste text to analyze:",
+        placeholder: "Enter text here...",
+        comparePlaceholder: "Enter text to compare...",
+        analyze: "Analyze",
+        compare: "Compare",
+        export: "Export",
+        share: "Share",
+        clear: "Clear",
+        tipsTitle: "Writing Tips",
+        footer: "© 2024 AI Text Detector",
+        noText: "Please enter some text to analyze",
+        likelyAI: "Likely AI-generated",
+        likelyHuman: "Likely human-written",
+        aiLabel: "AI Probability:",
+        offline: "You are currently offline. Some features may be limited.",
+        online: "You are back online!"
+      }
+      // Add other languages as needed
+    };
+    
+    this.init();
+  }
   
-  // Add theme toggle button
-  addThemeToggle();
+  init() {
+    if (typeof document !== 'undefined') {
+      document.addEventListener('DOMContentLoaded', () => {
+        this.switchLang("ENG");
+        this.addThemeToggle();
+        this.loadThemePreference();
+        this.setupEventListeners();
+        this.addAccessibilityFeatures();
+      });
+    }
+  }
   
-  // Load saved theme preference
-  loadThemePreference();
+  switchLang(lang) {
+    this.currentLang = lang;
+    const t = this.translations[lang];
+    
+    if (typeof document === 'undefined') return;
+    
+    // Update page title and header
+    document.querySelector("h1").innerHTML = t.title;
+    document.querySelector("header p").innerHTML = t.subtitle;
+    document.querySelector(".theme-banner").innerHTML = t.banner;
+    
+    // Update input section
+    document.querySelector(".input-section p").innerHTML = t.prompt;
+    document.getElementById("inputText").placeholder = t.placeholder;
+    document.getElementById("compareText").placeholder = t.comparePlaceholder;
+    
+    // Update buttons
+    document.getElementById("analyzeBtn").innerHTML = t.analyze;
+    document.getElementById("compareBtn").innerHTML = t.compare;
+    document.getElementById("exportBtn").innerHTML = t.export;
+    document.getElementById("shareBtn").innerHTML = t.share;
+    document.getElementById("clearBtn").innerHTML = t.clear;
+    
+    // Update sidebar
+    document.querySelector(".sidebar h3").innerHTML = t.tipsTitle;
+    this.updateTips(t);
+    
+    // Update footer
+    document.querySelector("footer p").innerHTML = t.footer;
+    
+    // Update theme toggle button
+    this.updateThemeToggleText();
+    
+    // Re-run analysis if text exists
+    this.detectAI();
+    
+    // Save language preference
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('aiDetectorLang', lang);
+    }
+  }
   
-  // Add event listeners
-  setupEventListeners();
+  updateTips(translations) {
+    const tips = document.querySelectorAll('.tip');
+    // Update tips with translations
+    // This is a placeholder - actual tips would come from translations
+  }
   
-  // Add accessibility features
-  addAccessibilityFeatures();
-});
+  updateThemeToggleText() {
+    if (typeof document === 'undefined') return;
+    
+    const themeToggle = document.getElementById('themeToggle');
+    const isDark = document.documentElement.classList.contains('dark-theme');
+    themeToggle.textContent = isDark ? '☀️' : '🌙';
+    themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+  }
+  
+  toggleTheme() {
+    if (typeof document === 'undefined') return;
+    
+    const isDarkMode = document.documentElement.classList.toggle('dark-theme');
+    document.body.classList.toggle('dark-theme');
+    this.updateThemeToggleText();
+    
+    // Save preference
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('aiDetectorTheme', isDarkMode ? 'dark' : 'light');
+    }
+  }
+  
+  detectAI() {
+    if (typeof document === 'undefined') return;
+    
+    const text = document.getElementById("inputText").value.trim();
+    if (!text) {
+      document.getElementById("result").innerHTML = this.translations[this.currentLang].noText;
+      document.getElementById("compareResult").innerHTML = "";
+      this.clearStats();
+      return;
+    }
+    
+    try {
+      // Use the AIDetector module to analyze text
+      const detector = new window.AIDetector();
+      const analysis = detector.analyzeTextDetailed(text);
+      const resultText = analysis.aiScore > 50 ? 
+        this.translations[this.currentLang].likelyAI : 
+        this.translations[this.currentLang].likelyHuman;
+      
+      // Display result
+      const resultElement = document.getElementById("result");
+      resultElement.innerHTML = `${this.translations[this.currentLang].aiLabel} ${analysis.aiScore}% - ${resultText}`;
+      
+      // Update other UI elements
+      document.getElementById("compareResult").innerHTML = "";
+      this.updateStats(analysis);
+      
+      // Log for debugging
+      if (window.AIDetectorDebug?.config.enabled) {
+        window.AIDetectorDebug.logger.info(`Analysis complete: Score ${analysis.aiScore}%`);
+      }
+    } catch (error) {
+      document.getElementById("result").innerHTML = "Error analyzing text: " + error.message;
+      if (window.AIDetectorDebug?.config.enabled) {
+        window.AIDetectorDebug.logger.error("Error in detectAI function:", error);
+      }
+    }
+  }
+  
+  clearStats() {
+    const statsElements = document.querySelectorAll('.stat-value');
+    statsElements.forEach(el => el.textContent = '0');
+    
+    // Explicitly set word count to 0
+    document.getElementById('wordCount').textContent = '0';
+  }
+  
+  updateStats(analysis) {
+    // Update word count
+    document.getElementById('wordCount').textContent = analysis.wordCount.toString();
+    
+    // Update sentence count
+    document.getElementById('sentenceCount').textContent = analysis.sentenceCount.toString();
+    
+    // Update readability if available
+    if (analysis.metrics?.readabilityScore) {
+      document.getElementById('readability').textContent = analysis.metrics.readabilityScore.toString();
+    }
+  }
+  
+  setupEventListeners() {
+    if (typeof document === 'undefined') return;
+    
+    // Add event listeners for buttons
+    document.getElementById('analyzeBtn').addEventListener('click', () => this.detectAI());
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      document.getElementById('inputText').value = '';
+      document.getElementById('result').innerHTML = '';
+      document.getElementById('compareResult').innerHTML = '';
+      this.clearStats();
+    });
+    
+    // Add theme toggle listener
+    document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+    
+    // Add language selector listener
+    document.getElementById('langSelect').addEventListener('change', (e) => this.switchLang(e.target.value));
+  }
+  
+  addThemeToggle() {
+    if (typeof document === 'undefined') return;
+    
+    const themeToggle = document.getElementById('themeToggle');
+    if (!themeToggle) return;
+    
+    themeToggle.setAttribute('role', 'button');
+    themeToggle.setAttribute('aria-label', 'Toggle theme');
+    this.updateThemeToggleText();
+  }
+  
+  loadThemePreference() {
+    if (typeof localStorage === 'undefined' || typeof document === 'undefined') return;
+    
+    const savedTheme = localStorage.getItem('aiDetectorTheme');
+    if (savedTheme === 'dark') {
+      document.documentElement.classList.add('dark-theme');
+      document.body.classList.add('dark-theme');
+      this.updateThemeToggleText();
+    }
+  }
+  
+  addAccessibilityFeatures() {
+    if (typeof document === 'undefined') return;
+    
+    // Add ARIA labels
+    document.getElementById('inputText').setAttribute('aria-label', 'Text to analyze');
+    document.getElementById('analyzeBtn').setAttribute('aria-label', 'Analyze text');
+    document.getElementById('clearBtn').setAttribute('aria-label', 'Clear text');
+    document.getElementById('langSelect').setAttribute('aria-label', 'Select language');
+  }
+  
+  showOfflineMessage() {
+    if (typeof document === 'undefined') return;
+    
+    const offlineMessage = document.createElement('div');
+    offlineMessage.className = 'offline-message';
+    offlineMessage.textContent = this.translations[this.currentLang].offline;
+    document.body.appendChild(offlineMessage);
+  }
+  
+  showOnlineMessage() {
+    if (typeof document === 'undefined') return;
+    
+    const onlineMessage = document.createElement('div');
+    onlineMessage.className = 'online-message';
+    onlineMessage.textContent = this.translations[this.currentLang].online;
+    document.body.appendChild(onlineMessage);
+    
+    // Remove the message after 3 seconds
+    setTimeout(() => {
+      onlineMessage.remove();
+    }, 3000);
+  }
+}
 
-/**
- * Switch the UI language
- * @param {string} lang - Language code
- */
-function switchLang(lang) {
-  currentLang = lang;
-  const t = translations[lang];
-  
-  // Update page title and header
-  document.querySelector("h1").innerHTML = t.title;
-  document.querySelector("header p").innerHTML = t.subtitle;
-  document.querySelector(".theme-banner").innerHTML = t.banner;
-  
-  // Update input section
-  document.querySelector(".input-section p").innerHTML = t.prompt;
-  document.getElementById("inputText").placeholder = t.placeholder;
-  document.getElementById("compareText").placeholder = t.comparePlaceholder;
-  
-  // Update buttons
-  document.getElementById("analyzeBtn").innerHTML = t.analyze;
-  document.getElementById("compareBtn").innerHTML = t.compare;
-  document.getElementById("exportBtn").innerHTML = t.export;
-  document.getElementById("shareBtn").innerHTML = t.share;
-  document.getElementById("clearBtn").innerHTML = t.clear;
-  
-  // Update sidebar
-  document.querySelector(".sidebar h3").innerHTML = t.tipsTitle;
-  updateTips(t);
-  
-  // Update footer
-  document.querySelector("footer p").innerHTML = t.footer;
-  
-  // Update theme toggle button
-  updateThemeToggleText();
-  
-  // Re-run analysis if text exists
-  detectAI();
-  
-  // Save language preference
-  localStorage.setItem('aiDetectorLang', lang);
+// Export for browser environments
+if (typeof window !== 'undefined') {
+  window.UIController = UIController;
 }
 
 /**
@@ -190,18 +381,6 @@ function addThemeToggle() {
   document.body.appendChild(themeToggle);
   
   themeToggle.addEventListener('click', toggleTheme);
-}
-
-/**
- * Toggle between light and dark theme
- */
-function toggleTheme() {
-  const isDarkMode = document.documentElement.classList.toggle('dark-theme');
-  document.body.classList.toggle('dark-theme');
-  updateThemeToggleText();
-  
-  // Save preference
-  localStorage.setItem('aiDetectorTheme', isDarkMode ? 'dark' : 'light');
 }
 
 /**
@@ -287,44 +466,6 @@ function addAccessibilityFeatures() {
   document.getElementById('inputText').setAttribute('aria-label', 'Text to analyze');
   document.getElementById('compareText').setAttribute('aria-label', 'Second text to compare');
   document.getElementById('langSelect').setAttribute('aria-label', 'Select language');
-}
-
-/**
- * Detect AI in the input text
- */
-function detectAI() {
-  const text = document.getElementById("inputText").value.trim();
-  if (!text) {
-    document.getElementById("result").innerHTML = translations[currentLang].noText;
-    document.getElementById("compareResult").innerHTML = "";
-    clearStats();
-    return;
-  }
-  
-  try {
-    // Use the AIDetector module to analyze text
-    const finalScore = window.AIDetector.analyzeText(text);
-    const resultText = finalScore > 50 ? translations[currentLang].likelyAI : translations[currentLang].likelyHuman;
-    
-    // Display result immediately without animation for debugging
-    const resultElement = document.getElementById("result");
-    resultElement.innerHTML = `${translations[currentLang].aiLabel} ${finalScore}% - ${resultText}`;
-    
-    // Update other UI elements
-    document.getElementById("compareResult").innerHTML = "";
-    updateStats(text);
-    
-    // Log for debugging
-    if (window.AIDetectorDebug && window.AIDetectorDebug.config.enabled) {
-      window.AIDetectorDebug.logger.info(`Analysis complete: Score ${finalScore}%`);
-    }
-  } catch (error) {
-    // Handle errors
-    document.getElementById("result").innerHTML = "Error analyzing text: " + error.message;
-    if (window.AIDetectorDebug && window.AIDetectorDebug.config.enabled) {
-      window.AIDetectorDebug.logger.error("Error in detectAI function:", error);
-    }
-  }
 }
 
 /**
@@ -470,32 +611,4 @@ function clearStats() {
   document.getElementById("repeatWords").innerHTML = "";
   document.getElementById("sentenceCount").innerHTML = "";
   document.getElementById("readability").innerHTML = "";
-}
-
-// Export functions for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    switchLang,
-    detectAI,
-    compareTexts,
-    exportResults,
-    shareOnX,
-    clearText,
-    updateStats,
-    clearStats,
-    toggleTheme
-  };
-} else {
-  // Browser environment
-  window.UIController = {
-    switchLang,
-    detectAI,
-    compareTexts,
-    exportResults,
-    shareOnX,
-    clearText,
-    updateStats,
-    clearStats,
-    toggleTheme
-  };
 }
