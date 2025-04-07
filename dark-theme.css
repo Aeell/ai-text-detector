@@ -1,0 +1,81 @@
+/* dark-theme.css - Dark theme styles for AI Text Detector */
+
+:root.dark-theme {
+  /* Colors for dark theme */
+  --primary-color: #1a2634;
+  --secondary-color: #2a9d8f;
+  --background-color: #121212;
+  --text-color: #e0e0e0;
+  --input-bg-color: #2a2a2a;
+  --input-text-color: #e0e0e0;
+  --border-color: #444;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --tip-bg-color: #2a2a2a;
+  --tip-text-color: #e0e0e0;
+  --success-color: #2a9d8f;
+  --link-color: #4ecdc4;
+}
+
+/* Dark theme specific overrides */
+body.dark-theme {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.dark-theme textarea {
+  background-color: var(--input-bg-color);
+  color: var(--input-text-color);
+  border-color: var(--border-color);
+}
+
+.dark-theme .tip-item {
+  background-color: var(--tip-bg-color);
+  color: var(--tip-text-color);
+  border-color: var(--border-color);
+}
+
+.dark-theme button:hover,
+.dark-theme select:hover {
+  background-color: #1a2634;
+}
+
+.dark-theme #educatorsBtn:hover {
+  background-color: #218878;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  padding: 5px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.3s;
+}
+
+.theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Theme transition */
+body, 
+header, 
+.sidebar, 
+.theme-banner, 
+textarea, 
+button, 
+select, 
+.tip-item {
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
