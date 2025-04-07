@@ -1,0 +1,83 @@
+/* dark-theme.css - Dark theme styles for AI Text Detector */
+
+/* Dark theme styles */
+:root[data-theme="dark"] {
+  --primary-color: #2c3e50;
+  --secondary-color: #28a745;
+  --background-color: #1a1a1a;
+  --text-color: #fff;
+  --input-bg-color: #2d2d2d;
+  --input-text-color: #fff;
+  --border-color: #444;
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --tip-bg-color: #2d2d2d;
+  --tip-text-color: #fff;
+  --success-color: #2a9d8f;
+  --link-color: #4ecdc4;
+}
+
+/* Light theme styles */
+:root[data-theme="light"] {
+  --primary-color: #3498db;
+  --secondary-color: #28a745;
+  --background-color: #ffffff;
+  --text-color: #333;
+  --input-bg-color: #f5f5f5;
+  --input-text-color: #333;
+  --border-color: #ccc;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --tip-bg-color: #f5f5f5;
+  --tip-text-color: #333;
+}
+
+/* Dark theme specific overrides */
+body.dark-theme {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.dark-theme textarea {
+  background-color: var(--input-bg-color);
+  color: var(--input-text-color);
+  border-color: var(--border-color);
+}
+
+.dark-theme .tip-item {
+  background-color: var(--tip-bg-color);
+  color: var(--tip-text-color);
+  border-color: var(--border-color);
+}
+
+.dark-theme button:hover,
+.dark-theme select:hover {
+  background-color: #1a2634;
+}
+
+.dark-theme #educatorsBtn:hover {
+  background-color: #218878;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 5px var(--shadow-color);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* Theme transition */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
