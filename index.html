@@ -162,11 +162,21 @@
   
   <!-- JavaScript loading -->
   <script type="module">
-    import { initApp } from './main.js';
-    
+    const importModule = async (name) => {
+      try {
+        return await import(`/ai-text-detector/${name}`);
+      } catch (error) {
+        console.error(`Error loading module ${name}:`, error);
+        return null;
+      }
+    };
+
     // Initialize app when DOM is loaded
-    document.addEventListener('DOMContentLoaded', () => {
-      initApp();
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { initApp } = await importModule('main.js');
+      if (initApp) {
+        initApp();
+      }
     });
   </script>
 </body>

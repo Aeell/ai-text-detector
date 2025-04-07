@@ -21,7 +21,11 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader'
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: ['@babel/plugin-transform-runtime']
+          }
         }
       },
       {
@@ -54,19 +58,22 @@ module.exports = {
       template: './index.html',
       filename: 'index.html',
       chunks: ['main'],
-      minify: false
+      minify: false,
+      scriptLoading: 'module'
     }),
     new HtmlWebpackPlugin({
       template: './blog.html',
       filename: 'blog.html',
       chunks: ['main'],
-      minify: false
+      minify: false,
+      scriptLoading: 'module'
     }),
     new HtmlWebpackPlugin({
       template: './educators.html',
       filename: 'educators.html',
       chunks: ['main'],
-      minify: false
+      minify: false,
+      scriptLoading: 'module'
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -97,6 +104,10 @@ module.exports = {
         }
       }
     }
+  },
+  resolve: {
+    extensions: ['.js'],
+    modules: ['node_modules']
   },
   devServer: {
     static: {
