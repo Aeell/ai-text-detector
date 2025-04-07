@@ -4,6 +4,8 @@
  * and handles the startup process.
  */
 
+console.log("--- main.js: Start execution ---");
+
 // Import main application class instance.
 // This automatically triggers the initialization in app.js
 // because app.js ends with `const app = new App();`

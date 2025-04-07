@@ -1,3 +1,5 @@
+console.log("--- app.js: Start execution ---");
+
 // app.js - Main application entry point
 const { AIDetector } = require('./AIDetector');
 const { UIController } = require('./UIController');
