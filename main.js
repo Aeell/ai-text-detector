@@ -123,35 +123,30 @@ function setupRealTimeAnalysis() {
   const inputText = document.getElementById('inputText');
   if (!inputText) return;
   
-  // Use debounce to prevent excessive analysis
-  if (window.AIUtils && window.AIUtils.debounce) {
-    const debouncedAnalysis = window.AIUtils.debounce(function() {
-      if (inputText.value.trim().length > 50) {
-        if (window.UIController && window.UIController.detectAI) {
-          window.UIController.detectAI();
-        }
+  const debouncedAnalysis = Utils.debounce(async () => {
+    if (inputText.value.trim().length > 50) {
+      try {
+        const result = await analyzeText(inputText.value);
+        const ui = new UIController();
+        ui.displayResults(result);
+      } catch (error) {
+        console.error('Error in real-time analysis:', error);
       }
-    }, 1000);
-    
-    inputText.addEventListener('input', debouncedAnalysis);
-  }
+    }
+  }, 1000);
+  
+  inputText.addEventListener('input', debouncedAnalysis);
 }
 
 /**
  * Check user's dark mode preference
  */
 function checkDarkModePreference() {
-  // Check if dark mode is preferred by the system
-  if (window.AIUtils && window.AIUtils.isFeatureSupported('darkMode')) {
-    // Only apply if user hasn't already set a preference
-    if (!window.AIUtils.retrieveData('aiDetectorTheme')) {
-      document.documentElement.classList.add('dark-theme');
-      document.body.classList.add('dark-theme');
-      
-      // Update theme toggle button if it exists
-      if (window.UIController && window.UIController.updateThemeToggleText) {
-        window.UIController.updateThemeToggleText();
-      }
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (!localStorage.getItem('theme')) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      updateThemeIcon('dark');
     }
   }
 }
@@ -166,7 +161,9 @@ function initTheme() {
 // Update theme icon
 function updateThemeIcon(theme) {
   const themeIcon = document.querySelector('#themeToggle i');
-  themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  if (themeIcon) {
+    themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  }
 }
 
 // Toggle theme
@@ -218,6 +215,32 @@ async function initApp() {
     
     // Check for dark mode preference
     checkDarkModePreference();
+    
+    // Add analyze button listener
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    if (analyzeBtn) {
+      analyzeBtn.addEventListener('click', async () => {
+        const text = document.getElementById('inputText').value;
+        try {
+          const result = await analyzeText(text);
+          ui.displayResults(result);
+        } catch (error) {
+          console.error('Error analyzing text:', error);
+          ui.showError('Error analyzing text. Please try again.');
+        }
+      });
+    }
+    
+    // Add compare button listener
+    const compareBtn = document.getElementById('compareBtn');
+    if (compareBtn) {
+      compareBtn.addEventListener('click', () => {
+        const text1 = document.getElementById('inputText').value;
+        const text2 = document.getElementById('compareText').value;
+        const result = detector.compareTexts(text1, text2);
+        ui.displayCompareResults(result);
+      });
+    }
     
     console.log('AI Text Detector initialized successfully');
   } catch (error) {
@@ -361,7 +384,7 @@ function loadResource(resourceJson) {
 // Initialize optimizations
 optimizeResourceLoading();
 
-// Export functions for external use
+// Create and export the AITextDetector object
 const AITextDetector = {
   initApp,
   initTheme,
@@ -372,7 +395,7 @@ const AITextDetector = {
   UIController
 };
 
-// Expose to window object and export
+// Expose to window object
 if (typeof window !== 'undefined') {
   window.AITextDetector = AITextDetector;
   window.initApp = initApp;
