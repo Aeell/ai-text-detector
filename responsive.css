@@ -1,0 +1,174 @@
+/* responsive.css - Mobile-specific styles for AI Text Detector */
+
+/* Small screens (up to 576px) */
+@media (max-width: 576px) {
+  :root {
+    --spacing-lg: 15px;
+    --spacing-md: 10px;
+    --font-size-xxl: 24px;
+    --font-size-xl: 20px;
+  }
+  
+  body {
+    padding: var(--spacing-md);
+  }
+  
+  .container {
+    padding: var(--spacing-md);
+  }
+  
+  .button-group {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  button, select {
+    width: 100%;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .theme-banner {
+    font-size: var(--font-size-md);
+    padding: var(--spacing-xs);
+  }
+  
+  .tip-item {
+    padding: var(--spacing-sm);
+  }
+}
+
+/* Medium screens (576px - 768px) */
+@media (min-width: 577px) and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .input-section {
+    padding-right: 0;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .sidebar {
+    width: 100%;
+  }
+  
+  .button-group {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  button {
+    flex: 1 0 40%;
+  }
+}
+
+/* Large screens (769px - 992px) */
+@media (min-width: 769px) and (max-width: 992px) {
+  .container {
+    max-width: 90%;
+  }
+  
+  .tips-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) {
+  button, select {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+  
+  .tip-item {
+    padding: var(--spacing-md);
+  }
+  
+  /* Larger touch targets */
+  .lang-toggle select {
+    height: 44px;
+  }
+  
+  /* Remove hover effects that don't work well on touch devices */
+  .tip-item:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .container {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header, footer, .sidebar, .button-group, .theme-banner, .theme-toggle {
+    display: none;
+  }
+  
+  .input-section {
+    width: 100%;
+    padding: 0;
+  }
+  
+  textarea {
+    border: 1px solid #ccc;
+    width: 100%;
+  }
+  
+  #result, #compareResult, #wordCount, #repeatWords, #sentenceCount, #readability {
+    color: black;
+    margin: 10pt 0;
+  }
+  
+  h1 {
+    font-size: 18pt;
+  }
+  
+  h2, h3 {
+    font-size: 14pt;
+  }
+}
+
+/* High contrast mode for accessibility */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #000080;
+    --secondary-color: #008000;
+    --background-color: #ffffff;
+    --text-color: #000000;
+    --input-bg-color: #ffffff;
+    --input-text-color: #000000;
+    --border-color: #000000;
+    --tip-bg-color: #ffffff;
+    --tip-text-color: #000000;
+    --success-color: #008000;
+    --link-color: #0000EE;
+  }
+  
+  button, select, textarea, .tip-item {
+    border: 2px solid #000000;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
