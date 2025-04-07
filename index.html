@@ -30,13 +30,13 @@
   </style>
   
   <!-- Preload critical assets -->
-  <link rel="preload" href="main.css" as="style">
-  <link rel="preload" href="main.js" as="script">
+  <link rel="preload" href="/ai-text-detector/main.css" as="style">
+  <link rel="preload" href="/ai-text-detector/main.js" as="script">
   
   <!-- Async CSS loading -->
-  <link rel="stylesheet" href="main.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="dark-theme.css" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="responsive.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="/ai-text-detector/main.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="/ai-text-detector/dark-theme.css" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="/ai-text-detector/responsive.css" media="print" onload="this.media='all'">
   
   <!-- Async Font Awesome -->
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
@@ -170,12 +170,12 @@
   <!-- Lazy load JavaScript modules -->
   <script type="module">
     // Import main module
-    import { initApp } from './main.js';
+    import { initApp } from '/ai-text-detector/main.js';
     
     // Load non-critical modules
     const loadModule = async (path) => {
       try {
-        const module = await import(path);
+        const module = await import(`/ai-text-detector${path}`);
         return module;
       } catch (error) {
         console.error(`Error loading module ${path}:`, error);
@@ -187,8 +187,8 @@
     document.addEventListener('DOMContentLoaded', async () => {
       // Load non-critical modules in parallel
       const [utils, debug] = await Promise.all([
-        loadModule('./utils.js'),
-        loadModule('./debug.js')
+        loadModule('/utils.js'),
+        loadModule('/debug.js')
       ]);
       
       // Initialize app

@@ -13,7 +13,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
     clean: true,
-    publicPath: '/'
+    publicPath: '/ai-text-detector/'
   },
   module: {
     rules: [
