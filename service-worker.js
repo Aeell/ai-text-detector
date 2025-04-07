@@ -1,89 +1,133 @@
 // Service Worker for AI Text Detector
 const CACHE_NAME = 'ai-detector-cache-v1';
-const ASSETS_TO_CACHE = [
+const APP_PREFIX = '/ai-text-detector';
+
+// Dynamic cache for runtime resources
+const RUNTIME_CACHE = 'ai-detector-runtime';
+
+// Assets to cache immediately
+const PRECACHE_ASSETS = [
   '/',
   '/index.html',
-  '/main.css',
-  '/dark-theme.css',
-  '/responsive.css',
-  '/main.js',
-  '/utils.js',
-  '/debug.js',
-  '/ai-detector.js',
-  '/ui-controller.js',
-  '/sherlock-ai-background.jpg',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'
+  '/css/main.css',
+  '/css/dark-theme.css',
+  '/css/responsive.css',
+  '/images/sherlock-ai-background.jpg',
+  '/favicon.ico'
 ];
 
-// Install event - cache assets
+// Function to normalize URLs
+function normalizeUrl(url) {
+  const baseUrl = self.location.origin;
+  return url.startsWith('http') ? url : `${baseUrl}${APP_PREFIX}${url}`;
+}
+
+// Install event - cache core assets
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Caching app assets');
-        return cache.addAll(ASSETS_TO_CACHE);
+        const normalizedUrls = PRECACHE_ASSETS.map(url => normalizeUrl(url));
+        return cache.addAll(normalizedUrls);
       })
       .catch(error => {
         console.error('Error caching assets:', error);
       })
   );
+  
+  // Activate worker immediately
+  self.skipWaiting();
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys()
-      .then(cacheNames => {
-        return Promise.all(
-          cacheNames.map(cacheName => {
-            if (cacheName !== CACHE_NAME) {
-              console.log('Deleting old cache:', cacheName);
-              return caches.delete(cacheName);
+    Promise.all([
+      // Clean up old caches
+      caches.keys()
+        .then(cacheNames => {
+          return Promise.all(
+            cacheNames
+              .filter(cacheName => 
+                cacheName.startsWith('ai-detector-') && 
+                cacheName !== CACHE_NAME &&
+                cacheName !== RUNTIME_CACHE
+              )
+              .map(cacheName => {
+                console.log('Deleting old cache:', cacheName);
+                return caches.delete(cacheName);
+              })
+          );
+        }),
+      // Claim clients immediately
+      self.clients.claim()
+    ])
+  );
+});
+
+// Fetch event - network first with cache fallback
+self.addEventListener('fetch', event => {
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') return;
+  
+  // Skip chrome-extension requests
+  if (event.request.url.startsWith('chrome-extension://')) return;
+  
+  // Handle API requests differently
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => {
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+  
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        // Cache successful responses
+        if (response.ok) {
+          const responseClone = response.clone();
+          caches.open(RUNTIME_CACHE)
+            .then(cache => {
+              cache.put(event.request, responseClone);
+            });
+        }
+        return response;
+      })
+      .catch(() => {
+        // Fallback to cache
+        return caches.match(event.request)
+          .then(cachedResponse => {
+            if (cachedResponse) {
+              return cachedResponse;
             }
-          })
-        );
+            
+            // For navigation requests, return index.html
+            if (event.request.mode === 'navigate') {
+              return caches.match(normalizeUrl('/index.html'));
+            }
+            
+            return new Response('Network error happened', {
+              status: 408,
+              headers: { 'Content-Type': 'text/plain' },
+            });
+          });
       })
   );
 });
 
-// Fetch event - serve from cache, fallback to network
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Return cached response if found
-        if (response) {
-          return response;
-        }
+// Handle errors
+self.addEventListener('error', event => {
+  console.error('Service Worker error:', event.error);
+});
 
-        // Clone the request because it can only be used once
-        const fetchRequest = event.request.clone();
-
-        // Make network request and cache the response
-        return fetch(fetchRequest)
-          .then(response => {
-            // Check if response is valid
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response because it can only be used once
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          })
-          .catch(error => {
-            console.error('Fetch failed:', error);
-            // You could return a custom offline page here
-            return new Response('Offline - Please check your connection');
-          });
-      })
-  );
+// Handle unhandled rejections
+self.addEventListener('unhandledrejection', event => {
+  console.error('Service Worker unhandled rejection:', event.reason);
 });
 
 // Handle background sync for offline submissions

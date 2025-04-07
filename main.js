@@ -14,7 +14,11 @@ import './responsive.css';
 // Register service worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
+    const swPath = window.location.pathname.includes('ai-text-detector') 
+      ? '/ai-text-detector/service-worker.js'
+      : '/service-worker.js';
+      
+    navigator.serviceWorker.register(swPath)
       .then(registration => {
         console.log('ServiceWorker registration successful');
         
@@ -34,6 +38,9 @@ if ('serviceWorker' in navigator) {
       })
       .catch(error => {
         console.error('ServiceWorker registration failed:', error);
+        if (window.AIDetectorDebug) {
+          window.AIDetectorDebug.logger.error('ServiceWorker registration failed:', error);
+        }
       });
   });
 }
@@ -179,6 +186,11 @@ function toggleTheme() {
 // Initialize application with offline support
 async function initApp() {
   try {
+    // Initialize debug mode first for better error tracking
+    if (window.AIDetectorDebug) {
+      window.AIDetectorDebug.init();
+    }
+    
     // Initialize IndexedDB
     await initDB();
     
@@ -191,60 +203,101 @@ async function initApp() {
       themeToggle.addEventListener('click', toggleTheme);
     }
     
-    // Initialize UI components
-    const ui = new UIController();
-    const detector = new AIDetector();
-    
-    // Initialize debug mode if needed
-    if (window.AIDetectorDebug) {
-      window.AIDetectorDebug.init();
+    // Initialize UI components with error handling
+    try {
+      const ui = new UIController();
+      const detector = new AIDetector();
+      
+      // Set initial language based on user preference
+      const userLang = Utils.getUserLanguage();
+      const langSelect = document.getElementById('langSelect');
+      if (langSelect) {
+        langSelect.value = userLang;
+      }
+      
+      // Initialize UI with user's preferred language
+      ui.switchLang(userLang);
+      
+      // Add event listeners for text input
+      setupRealTimeAnalysis();
+      
+      // Check for dark mode preference
+      checkDarkModePreference();
+      
+      // Add analyze button listener
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', async () => {
+          const text = document.getElementById('inputText')?.value;
+          if (!text) {
+            ui.showError('Please enter text to analyze.');
+            return;
+          }
+          
+          try {
+            const result = await analyzeText(text);
+            ui.displayResults(result);
+          } catch (error) {
+            console.error('Error analyzing text:', error);
+            ui.showError('Error analyzing text. Please try again.');
+            if (window.AIDetectorDebug) {
+              window.AIDetectorDebug.logger.error('Text analysis error:', error);
+            }
+          }
+        });
+      }
+      
+      // Add compare button listener
+      const compareBtn = document.getElementById('compareBtn');
+      if (compareBtn) {
+        compareBtn.addEventListener('click', () => {
+          const text1 = document.getElementById('inputText')?.value;
+          const text2 = document.getElementById('compareText')?.value;
+          
+          if (!text1 || !text2) {
+            ui.showError('Please enter both texts to compare.');
+            return;
+          }
+          
+          try {
+            const result = detector.compareTexts(text1, text2);
+            ui.displayCompareResults(result);
+          } catch (error) {
+            console.error('Error comparing texts:', error);
+            ui.showError('Error comparing texts. Please try again.');
+            if (window.AIDetectorDebug) {
+              window.AIDetectorDebug.logger.error('Text comparison error:', error);
+            }
+          }
+        });
+      }
+      
+      console.log('AI Text Detector initialized successfully');
+      if (window.AIDetectorDebug) {
+        window.AIDetectorDebug.logger.info('AI Text Detector initialized successfully');
+      }
+      
+      // Hide loading spinner and show content
+      const loadingSpinner = document.querySelector('.loading-spinner');
+      const appContent = document.querySelector('.app-content');
+      if (loadingSpinner && appContent) {
+        loadingSpinner.style.display = 'none';
+        appContent.classList.add('loaded');
+      }
+      
+    } catch (error) {
+      console.error('Error initializing UI components:', error);
+      if (window.AIDetectorDebug) {
+        window.AIDetectorDebug.logger.error('UI initialization error:', error);
+      }
+      throw error;
     }
     
-    // Set initial language based on user preference
-    const userLang = Utils.getUserLanguage();
-    const langSelect = document.getElementById('langSelect');
-    if (langSelect) {
-      langSelect.value = userLang;
-    }
-    
-    // Initialize UI with user's preferred language
-    ui.switchLang(userLang);
-    
-    // Add event listeners for text input
-    setupRealTimeAnalysis();
-    
-    // Check for dark mode preference
-    checkDarkModePreference();
-    
-    // Add analyze button listener
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    if (analyzeBtn) {
-      analyzeBtn.addEventListener('click', async () => {
-        const text = document.getElementById('inputText').value;
-        try {
-          const result = await analyzeText(text);
-          ui.displayResults(result);
-        } catch (error) {
-          console.error('Error analyzing text:', error);
-          ui.showError('Error analyzing text. Please try again.');
-        }
-      });
-    }
-    
-    // Add compare button listener
-    const compareBtn = document.getElementById('compareBtn');
-    if (compareBtn) {
-      compareBtn.addEventListener('click', () => {
-        const text1 = document.getElementById('inputText').value;
-        const text2 = document.getElementById('compareText').value;
-        const result = detector.compareTexts(text1, text2);
-        ui.displayCompareResults(result);
-      });
-    }
-    
-    console.log('AI Text Detector initialized successfully');
   } catch (error) {
     console.error('Error initializing application:', error);
+    if (window.AIDetectorDebug) {
+      window.AIDetectorDebug.logger.error('Application initialization error:', error);
+    }
     document.body.innerHTML = '<h1>Error loading application. Please try refreshing the page.</h1>';
   }
 }
@@ -327,11 +380,15 @@ measurePerformance();
 
 // Optimize resource loading
 function optimizeResourceLoading() {
+  const basePath = window.location.pathname.includes('ai-text-detector') 
+    ? '/ai-text-detector'
+    : '';
+    
   // Preload critical resources
   const preloadLinks = [
-    { rel: 'preload', as: 'style', href: '/main.css' },
-    { rel: 'preload', as: 'script', href: '/ai-detector.js' },
-    { rel: 'preload', as: 'font', href: '/fonts/main-font.woff2', crossorigin: 'anonymous' }
+    { rel: 'preload', as: 'style', href: `${basePath}/main.css` },
+    { rel: 'preload', as: 'script', href: `${basePath}/ai-detector.js` },
+    { rel: 'preload', as: 'font', href: `${basePath}/fonts/main-font.woff2`, crossorigin: 'anonymous' }
   ];
   
   preloadLinks.forEach(link => {
@@ -342,9 +399,9 @@ function optimizeResourceLoading() {
   
   // Lazy load non-critical resources
   const lazyResources = [
-    { type: 'script', src: '/analytics.js' },
-    { type: 'script', src: '/feedback.js' },
-    { type: 'style', href: '/print.css', media: 'print' }
+    { type: 'script', src: `${basePath}/analytics.js` },
+    { type: 'script', src: `${basePath}/feedback.js` },
+    { type: 'style', href: `${basePath}/print.css`, media: 'print' }
   ];
   
   const observer = new IntersectionObserver((entries) => {
