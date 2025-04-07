@@ -20,6 +20,12 @@ const { LanguageModel } = require('./models/LanguageModel');
 // Import utilities
 const { Debug } = require('./utils/Debug');
 
+// Import main application class
+const { app } = require('./app');
+
+// Import styles for webpack to process
+require('../css/styles.css');
+
 /**
  * Application initialization
  */
@@ -149,4 +155,14 @@ window.addEventListener('error', (event) => {
   if (analyticsService && analyticsService.isEnabled()) {
     analyticsService.trackError(event.error);
   }
-}); 
+});
+
+// Application is already initialized by importing app.js
+console.log('Main.js loaded, application should be initialized.');
+
+// Optionally, expose app instance globally for debugging
+if (process.env.NODE_ENV === 'development') {
+  window.app = app;
+}
+
+// Add any other necessary global setup here 
