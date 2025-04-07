@@ -19,7 +19,31 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     .loading-spinner {
-      display: none;
+      display: block;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #f3f3f3;
+      border-top: 5px solid #3498db;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .app-content {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .app-content.loaded {
+      opacity: 1;
     }
   </style>
   
@@ -84,84 +108,112 @@
   <div class="loading-spinner">
     <div class="spinner"></div>
   </div>
-  <a href="#inputText" class="skip-link">Skip to content</a>
-  <div class="theme-banner">Catch AI Cheaters in Seconds!</div>
-  <header>
-    <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light theme">
-      <i class="fas fa-moon"></i>
-    </button>
-    <h1>AI Homework Detector</h1>
-    <p>For Teachers, Parents, and Honest Students</p>
-    <button id="educatorsBtn" onclick="window.location.href='educators.html'">Educators Tools</button>
-  </header>
-  <div class="container">
-    <div class="input-section">
-      <div class="lang-toggle">
-        <select id="langSelect" aria-label="Select language">
-          <option value="ENG">ENG</option>
-          <option value="CZE">CZE</option>
-          <option value="DE">DE</option>
-          <option value="FR">FR</option>
-          <option value="ES">ES</option>
-          <option value="UK">UK</option>
-          <option value="RU">RU</option>
-        </select>
+  
+  <div class="app-content">
+    <a href="#inputText" class="skip-link">Skip to content</a>
+    <div class="theme-banner">Catch AI Cheaters in Seconds!</div>
+    <header>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark/light theme">
+        <i class="fas fa-moon"></i>
+      </button>
+      <h1>AI Homework Detector</h1>
+      <p>For Teachers, Parents, and Honest Students</p>
+      <button id="educatorsBtn" onclick="window.location.href='educators.html'">Educators Tools</button>
+    </header>
+    <div class="container">
+      <div class="input-section">
+        <div class="lang-toggle">
+          <select id="langSelect" aria-label="Select language">
+            <option value="ENG">ENG</option>
+            <option value="CZE">CZE</option>
+            <option value="DE">DE</option>
+            <option value="FR">FR</option>
+            <option value="ES">ES</option>
+            <option value="UK">UK</option>
+            <option value="RU">RU</option>
+          </select>
+        </div>
+        <p>Paste student text to detect AI-generated homework.</p>
+        <textarea id="inputText" placeholder="Paste text here (e.g., homework, essays)..." aria-label="Text to analyze"></textarea>
+        <textarea id="compareText" placeholder="Paste second text to compare..." aria-label="Second text to compare"></textarea>
+        <br>
+        <div class="button-group">
+          <button id="analyzeBtn">Analyze Text</button>
+          <button id="compareBtn">Compare Texts</button>
+          <button id="exportBtn">Export Results</button>
+          <button id="shareBtn">Share: 𝕏</button>
+          <button id="clearBtn">Clear</button>
+        </div>
+        <div id="result"></div>
+        <div id="compareResult"></div>
+        <div id="wordCount"></div>
+        <div id="repeatWords"></div>
+        <div id="sentenceCount"></div>
+        <div id="readability"></div>
       </div>
-      <p>Paste student text to detect AI-generated homework.</p>
-      <textarea id="inputText" placeholder="Paste text here (e.g., homework, essays)..." aria-label="Text to analyze"></textarea>
-      <textarea id="compareText" placeholder="Paste second text to compare..." aria-label="Second text to compare"></textarea>
-      <br>
-      <div class="button-group">
-        <button id="analyzeBtn">Analyze Text</button>
-        <button id="compareBtn">Compare Texts</button>
-        <button id="exportBtn">Export Results</button>
-        <button id="shareBtn">Share: 𝕏</button>
-        <button id="clearBtn">Clear</button>
-      </div>
-      <div id="result"></div>
-      <div id="compareResult"></div>
-      <div id="wordCount"></div>
-      <div id="repeatWords"></div>
-      <div id="sentenceCount"></div>
-      <div id="readability"></div>
+      <aside class="sidebar">
+        <h3>Tips for Teachers</h3>
+        <div class="tips-container">
+          <div class="tip-item">
+            <span class="icon"><i class="fas fa-check"></i></span>
+            <h4>Uniform Sentences</h4>
+            <p>AI text often has consistent sentence lengths.</p>
+          </div>
+          <div class="tip-item">
+            <span class="icon"><i class="fas fa-check"></i></span>
+            <h4>Polished Phrasing</h4>
+            <p>Look for overly neat prose without errors.</p>
+          </div>
+          <div class="tip-item">
+            <span class="icon"><i class="fas fa-check"></i></span>
+            <h4>Overused Transitions</h4>
+            <p>Spot phrases like 'in conclusion'.</p>
+          </div>
+        </div>
+        <p><a href="blog.html">Read our Blog</a></p>
+      </aside>
     </div>
-    <aside class="sidebar">
-      <h3>Tips for Teachers</h3>
-      <div class="tips-container">
-        <div class="tip-item">
-          <span class="icon"><i class="fas fa-check"></i></span>
-          <h4>Uniform Sentences</h4>
-          <p>AI text often has consistent sentence lengths.</p>
-        </div>
-        <div class="tip-item">
-          <span class="icon"><i class="fas fa-check"></i></span>
-          <h4>Polished Phrasing</h4>
-          <p>Look for overly neat prose without errors.</p>
-        </div>
-        <div class="tip-item">
-          <span class="icon"><i class="fas fa-check"></i></span>
-          <h4>Overused Transitions</h4>
-          <p>Spot phrases like 'in conclusion'.</p>
-        </div>
-      </div>
-      <p><a href="blog.html">Read our Blog</a></p>
-    </aside>
+    <footer>
+      <p>Built to promote honest work | <a href="mailto:your-email@example.com">Contact Us</a></p>
+    </footer>
   </div>
-  <footer>
-    <p>Built to promote honest work | <a href="mailto:your-email@example.com">Contact Us</a></p>
-  </footer>
   
   <!-- JavaScript loading -->
   <script>
-    // Initialize app after DOM content loads
-    window.addEventListener('DOMContentLoaded', () => {
-      if (window.initApp) {
-        window.initApp();
+    // Show loading spinner
+    const loadingSpinner = document.querySelector('.loading-spinner');
+    const appContent = document.querySelector('.app-content');
+    
+    // Function to initialize the app
+    function initializeApp() {
+      if (window.AITextDetector && window.initApp) {
+        try {
+          // Hide loading spinner and show content
+          window.initApp()
+            .then(() => {
+              loadingSpinner.style.display = 'none';
+              appContent.classList.add('loaded');
+            })
+            .catch(error => {
+              console.error('Error initializing app:', error);
+              document.body.innerHTML = '<h1>Error loading application. Please try refreshing the page.</h1>';
+            });
+        } catch (error) {
+          console.error('Error in initialization:', error);
+          document.body.innerHTML = '<h1>Error loading application. Please try refreshing the page.</h1>';
+        }
       } else {
-        console.error('initApp not found');
+        console.error('Required modules not found');
         document.body.innerHTML = '<h1>Error loading application. Please try refreshing the page.</h1>';
       }
-    });
+    }
+    
+    // Check if the script is already loaded
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      initializeApp();
+    } else {
+      window.addEventListener('DOMContentLoaded', initializeApp);
+    }
   </script>
 <script src="/ai-text-detector/main.bundle.js"></script></body>
 </html>
