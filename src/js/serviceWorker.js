@@ -1,11 +1,12 @@
 // Service Worker for AI Text Detector
 const CACHE_NAME = 'ai-text-detector-v1';
+const BASE_PATH = '/ai-text-detector';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/css/styles.css',
-  '/dist/bundle.js',
-  '/assets/favicon.ico',
+  `${BASE_PATH}/`,
+  `${BASE_PATH}/index.html`,
+  `${BASE_PATH}/css/styles.css`,
+  `${BASE_PATH}/dist/bundle.js`,
+  `${BASE_PATH}/assets/favicon.ico`,
   // Add other static assets to cache
 ];
 
@@ -38,8 +39,31 @@ self.addEventListener('activate', event => {
   );
 });
 
+// Helper to determine if a request URL should be cached
+function shouldCache(url) {
+  const parsedUrl = new URL(url);
+  
+  // Cache requests to our domain
+  if (parsedUrl.origin === location.origin) {
+    return true;
+  }
+  
+  // Add any external resources that should be cached
+  const externalUrlsToCache = [
+    'https://fonts.googleapis.com',
+    'https://cdn.jsdelivr.net'
+  ];
+  
+  return externalUrlsToCache.some(externalUrl => 
+    parsedUrl.href.startsWith(externalUrl)
+  );
+}
+
 // Fetch event - serve from cache or network
 self.addEventListener('fetch', event => {
+  // Handle GitHub Pages base path
+  let requestUrl = event.request.url;
+  
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -59,14 +83,17 @@ self.addEventListener('fetch', event => {
               return response;
             }
             
-            // Clone the response - response can only be used once
-            const responseToCache = response.clone();
-            
-            // Cache the fetched response
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache);
-              });
+            // Only cache if it's a resource we want to cache
+            if (shouldCache(requestUrl)) {
+              // Clone the response - response can only be used once
+              const responseToCache = response.clone();
+              
+              // Cache the fetched response
+              caches.open(CACHE_NAME)
+                .then(cache => {
+                  cache.put(event.request, responseToCache);
+                });
+            }
               
             return response;
           })
@@ -78,6 +105,11 @@ self.addEventListener('fetch', event => {
               }), {
                 headers: { 'Content-Type': 'application/json' }
               });
+            }
+            
+            // For HTML navigation requests, show offline page
+            if (event.request.mode === 'navigate') {
+              return caches.match(`${BASE_PATH}/index.html`);
             }
           });
       })
