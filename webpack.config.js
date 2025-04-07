@@ -11,7 +11,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].js',
+    filename: '[name].bundle.js',
     clean: true,
     publicPath: '/ai-text-detector/'
   },
@@ -23,7 +23,13 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'],
+            presets: [
+              ['@babel/preset-env', {
+                targets: '> 0.25%, not dead',
+                useBuiltIns: 'usage',
+                corejs: 3
+              }]
+            ],
             plugins: ['@babel/plugin-transform-runtime']
           }
         }
@@ -32,7 +38,12 @@ module.exports = {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1
+            }
+          },
           'postcss-loader'
         ]
       },
@@ -54,21 +65,21 @@ module.exports = {
       filename: 'index.html',
       chunks: ['main'],
       minify: false,
-      inject: true
+      inject: 'body'
     }),
     new HtmlWebpackPlugin({
       template: './blog.html',
       filename: 'blog.html',
       chunks: ['main'],
       minify: false,
-      inject: true
+      inject: 'body'
     }),
     new HtmlWebpackPlugin({
       template: './educators.html',
       filename: 'educators.html',
       chunks: ['main'],
       minify: false,
-      inject: true
+      inject: 'body'
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -85,8 +96,9 @@ module.exports = {
   ],
   optimization: {
     moduleIds: 'deterministic',
-    runtimeChunk: false,
+    runtimeChunk: 'single',
     splitChunks: {
+      chunks: 'all',
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
