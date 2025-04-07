@@ -1,160 +1,148 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="AI Text Detector - Advanced text analysis tool to detect AI-generated content">
+    <meta name="description" content="Advanced AI text detection tool with multilingual support">
     <title>AI Text Detector</title>
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
 </head>
 <body>
-    <header class="app-header">
-        <nav class="main-nav" aria-label="Main navigation">
+    <header class="header">
+        <nav class="nav">
             <div class="logo">
-                <img src="../assets/logo.svg" alt="AI Text Detector Logo" width="40" height="40">
                 <h1>AI Text Detector</h1>
             </div>
             <div class="nav-controls">
-                <button id="themeToggle" aria-label="Toggle theme" class="icon-button">
-                    <span class="theme-icon"></span>
-                </button>
-                <select id="langSelect" aria-label="Select language">
+                <select id="languageSelect" aria-label="Select language">
                     <option value="en">English</option>
                     <option value="es">Español</option>
                     <option value="fr">Français</option>
                     <option value="de">Deutsch</option>
                 </select>
+                <button id="themeToggle" aria-label="Toggle theme">
+                    <span class="theme-icon">🌓</span>
+                </button>
             </div>
         </nav>
     </header>
 
-    <main class="app-main">
-        <div class="container">
-            <section class="input-section" aria-labelledby="input-title">
-                <h2 id="input-title">Text Analysis</h2>
-                <div class="tab-container">
-                    <div class="tab-buttons" role="tablist">
-                        <button id="singleTab" role="tab" aria-selected="true" aria-controls="singlePanel">
-                            Single Text
-                        </button>
-                        <button id="compareTab" role="tab" aria-selected="false" aria-controls="comparePanel">
-                            Compare Texts
-                        </button>
-                    </div>
+    <main class="main">
+        <section class="input-section">
+            <div class="text-input-container">
+                <textarea 
+                    id="textInput" 
+                    placeholder="Enter text to analyze..."
+                    aria-label="Text to analyze"
+                    rows="10"
+                ></textarea>
+                <div class="input-controls">
+                    <button id="analyzeBtn" class="primary-btn">
+                        Analyze Text
+                    </button>
+                    <button id="clearBtn" class="secondary-btn">
+                        Clear
+                    </button>
+                </div>
+            </div>
+        </section>
 
-                    <div id="singlePanel" role="tabpanel" aria-labelledby="singleTab">
-                        <div class="input-container">
-                            <textarea id="inputText" 
-                                    placeholder="Enter text to analyze..." 
-                                    aria-label="Text to analyze"
-                                    rows="8"></textarea>
-                            <div class="button-group">
-                                <button id="analyzeBtn" class="primary-button">
-                                    Analyze Text
-                                </button>
-                                <button id="clearBtn" class="secondary-button">
-                                    Clear
-                                </button>
-                            </div>
+        <section class="results-section" aria-live="polite">
+            <div id="loadingIndicator" class="loading hidden">
+                Analyzing text...
+            </div>
+            
+            <div id="results" class="results hidden">
+                <div class="result-card">
+                    <h2>Analysis Results</h2>
+                    <div class="metrics">
+                        <div class="metric">
+                            <h3>AI Probability</h3>
+                            <div id="aiProbability" class="metric-value">-</div>
                         </div>
-                    </div>
-
-                    <div id="comparePanel" role="tabpanel" aria-labelledby="compareTab" hidden>
-                        <div class="comparison-container">
-                            <div class="input-container">
-                                <textarea id="text1" 
-                                        placeholder="Enter first text..." 
-                                        aria-label="First text for comparison"
-                                        rows="8"></textarea>
-                            </div>
-                            <div class="input-container">
-                                <textarea id="text2" 
-                                        placeholder="Enter second text..." 
-                                        aria-label="Second text for comparison"
-                                        rows="8"></textarea>
-                            </div>
-                            <div class="button-group">
-                                <button id="compareBtn" class="primary-button">
-                                    Compare Texts
-                                </button>
-                                <button id="clearCompareBtn" class="secondary-button">
-                                    Clear Both
-                                </button>
-                            </div>
+                        <div class="metric">
+                            <h3>Confidence Score</h3>
+                            <div id="confidenceScore" class="metric-value">-</div>
+                        </div>
+                        <div class="metric">
+                            <h3>Language</h3>
+                            <div id="detectedLanguage" class="metric-value">-</div>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <section class="results-section" aria-labelledby="results-title">
-                <h2 id="results-title">Analysis Results</h2>
-                <div id="resultsContainer" class="results-container" aria-live="polite">
-                    <div class="placeholder-message">
-                        Enter text above to see analysis results
+                <div class="result-card">
+                    <h2>Detailed Analysis</h2>
+                    <div class="analysis-details">
+                        <div id="textMetrics" class="metrics-grid">
+                            <!-- Metrics will be populated by JavaScript -->
+                        </div>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
 
-        <aside id="settingsPanel" class="settings-panel" aria-labelledby="settings-title">
-            <h2 id="settings-title">Settings</h2>
-            <form id="settingsForm">
-                <fieldset>
-                    <legend>Accessibility</legend>
-                    <div class="form-group">
-                        <input type="checkbox" id="highContrast" name="highContrast">
-                        <label for="highContrast">High Contrast</label>
-                    </div>
-                    <div class="form-group">
-                        <label for="fontSize">Font Size</label>
-                        <select id="fontSize" name="fontSize">
-                            <option value="14px">Small</option>
-                            <option value="16px" selected>Medium</option>
-                            <option value="18px">Large</option>
-                            <option value="20px">Extra Large</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <input type="checkbox" id="reducedMotion" name="reducedMotion">
-                        <label for="reducedMotion">Reduced Motion</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="checkbox" id="textToSpeech" name="textToSpeech">
-                        <label for="textToSpeech">Text-to-Speech</label>
-                    </div>
-                </fieldset>
-            </form>
-        </aside>
+            <div id="error" class="error hidden">
+                An error occurred while analyzing the text.
+            </div>
+        </section>
     </main>
 
-    <footer class="app-footer">
-        <div class="container">
-            <p>&copy; 2024 AI Text Detector. All rights reserved.</p>
-            <nav class="footer-nav">
+    <footer class="footer">
+        <div class="footer-content">
+            <p>AI Text Detector &copy; 2024</p>
+            <div class="footer-links">
                 <a href="#about">About</a>
                 <a href="#privacy">Privacy</a>
-                <a href="#terms">Terms</a>
                 <a href="#help">Help</a>
-            </nav>
+            </div>
         </div>
     </footer>
 
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay" aria-hidden="true">
-        <div class="loader" role="alert" aria-label="Loading">
-            <div class="loader-spinner"></div>
-            <p>Analyzing...</p>
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Settings</h2>
+            <div class="settings-grid">
+                <div class="setting">
+                    <label for="fontSize">Font Size</label>
+                    <select id="fontSize">
+                        <option value="small">Small</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="large">Large</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label for="highContrast">High Contrast</label>
+                    <input type="checkbox" id="highContrast">
+                </div>
+                <div class="setting">
+                    <label for="reducedMotion">Reduced Motion</label>
+                    <input type="checkbox" id="reducedMotion">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="saveSettings" class="primary-btn">Save</button>
+                <button id="closeSettings" class="secondary-btn">Cancel</button>
+            </div>
         </div>
     </div>
 
-    <!-- Notification Toast -->
-    <div id="notificationToast" class="notification-toast" role="alert" aria-hidden="true">
-        <p></p>
-        <button class="close-button" aria-label="Close notification">&times;</button>
-    </div>
-
     <!-- Scripts -->
-    <script type="module" src="../js/app.js"></script>
+    <script src="../../dist/bundle.js"></script>
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/js/serviceWorker.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html> 

@@ -1,167 +1,127 @@
 // LanguageManager.js - Language detection and management module
-import { Debug } from '../utils/Debug';
+const { Debug } = require('../utils/Debug');
 
-export class LanguageManager {
+class LanguageManager {
   constructor() {
     this.debug = Debug;
-    this.currentLanguage = 'ENG';
-    this.supportedLanguages = new Set(['ENG', 'ESP', 'FRA', 'DEU', 'ITA', 'POR', 'RUS', 'CHN', 'JPN', 'KOR']);
+    this.currentLanguage = 'en';
     this.translations = {};
-    this.initialize();
+    this.supportedLanguages = ['en', 'es', 'fr', 'de'];
   }
 
-  async initialize() {
+  async loadTranslations(language) {
     try {
-      await this.loadTranslations();
-      this.debug.logger.info('LanguageManager initialized successfully');
-    } catch (error) {
-      this.debug.logger.error('Error initializing LanguageManager:', error);
-      throw error;
-    }
-  }
-
-  async loadTranslations() {
-    try {
-      // Load translations for all supported languages
-      for (const lang of this.supportedLanguages) {
-        this.translations[lang] = await import(`../locales/${lang.toLowerCase()}.json`);
+      if (!this.supportedLanguages.includes(language)) {
+        throw new Error(`Language ${language} is not supported`);
       }
-      this.debug.logger.info('Translations loaded successfully');
+
+      if (this.translations[language]) {
+        return this.translations[language];
+      }
+
+      const response = await fetch(`../locales/${language}.json`);
+      if (!response.ok) {
+        throw new Error(`Failed to load translations for ${language}`);
+      }
+
+      const translations = await response.json();
+      this.translations[language] = translations;
+
+      return translations;
     } catch (error) {
       this.debug.logger.error('Error loading translations:', error);
       throw error;
     }
   }
 
-  setLanguage(language) {
+  async setLanguage(language) {
     try {
-      const normalizedLang = language.toUpperCase();
-      if (!this.supportedLanguages.has(normalizedLang)) {
-        throw new Error(`Language ${language} is not supported`);
-      }
-      
-      this.currentLanguage = normalizedLang;
-      this.updateUILanguage();
-      this.debug.logger.info(`Language set to ${normalizedLang}`);
+      const translations = await this.loadTranslations(language);
+      this.currentLanguage = language;
+      this.updateUI(translations);
+      return true;
     } catch (error) {
       this.debug.logger.error('Error setting language:', error);
-      throw error;
+      return false;
     }
   }
 
-  updateUILanguage() {
+  updateUI(translations) {
     try {
+      document.documentElement.lang = this.currentLanguage;
+
       const elements = document.querySelectorAll('[data-i18n]');
-      elements.forEach(el => {
-        const key = el.dataset.i18n;
-        const translation = this.getTranslation(key);
+      elements.forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const translation = this.getNestedTranslation(translations, key);
+
         if (translation) {
-          if (el.tagName === 'INPUT' && el.type === 'placeholder') {
-            el.placeholder = translation;
+          if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+            if (element.getAttribute('placeholder')) {
+              element.setAttribute('placeholder', translation);
+            } else {
+              element.value = translation;
+            }
           } else {
-            el.textContent = translation;
+            element.textContent = translation;
           }
         }
       });
-      
-      document.documentElement.lang = this.currentLanguage.toLowerCase();
-      this.debug.logger.info('UI language updated successfully');
+
+      // Update meta tags
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription && translations.meta?.description) {
+        metaDescription.setAttribute('content', translations.meta.description);
+      }
+
+      this.debug.logger.info(`UI updated to language: ${this.currentLanguage}`);
     } catch (error) {
-      this.debug.logger.error('Error updating UI language:', error);
-      throw error;
+      this.debug.logger.error('Error updating UI with translations:', error);
     }
   }
 
-  getTranslation(key) {
+  getNestedTranslation(obj, path) {
     try {
-      return this.translations[this.currentLanguage]?.[key] || key;
+      return path.split('.').reduce((p, c) => p?.[c], obj);
     } catch (error) {
-      this.debug.logger.error(`Error getting translation for key ${key}:`, error);
+      this.debug.logger.error('Error getting nested translation:', error);
+      return null;
+    }
+  }
+
+  getCurrentLanguage() {
+    return this.currentLanguage;
+  }
+
+  getSupportedLanguages() {
+    return this.supportedLanguages;
+  }
+
+  translate(key, variables = {}) {
+    try {
+      const translations = this.translations[this.currentLanguage];
+      if (!translations) {
+        throw new Error(`Translations not loaded for ${this.currentLanguage}`);
+      }
+
+      let translation = this.getNestedTranslation(translations, key);
+      if (!translation) {
+        this.debug.logger.warn(`Translation key not found: ${key}`);
+        return key;
+      }
+
+      // Replace variables in translation
+      Object.entries(variables).forEach(([key, value]) => {
+        translation = translation.replace(`{${key}}`, value);
+      });
+
+      return translation;
+    } catch (error) {
+      this.debug.logger.error('Error translating key:', error);
       return key;
     }
   }
+}
 
-  getSupportedLanguage(language) {
-    const normalizedLang = language.toUpperCase();
-    return this.supportedLanguages.has(normalizedLang) ? normalizedLang : null;
-  }
-
-  async detectLanguage(text) {
-    try {
-      // Basic language detection using character frequency analysis
-      const langScores = new Map();
-      
-      // Calculate character frequency
-      const charFreq = this.calculateCharacterFrequency(text);
-      
-      // Compare with language patterns
-      for (const lang of this.supportedLanguages) {
-        const score = this.calculateLanguageScore(charFreq, lang);
-        langScores.set(lang, score);
-      }
-      
-      // Get the language with highest score
-      const [detectedLang] = Array.from(langScores.entries())
-        .sort((a, b) => b[1] - a[1])[0];
-      
-      this.debug.logger.info(`Language detected: ${detectedLang}`);
-      return detectedLang;
-    } catch (error) {
-      this.debug.logger.error('Error detecting language:', error);
-      return this.currentLanguage;
-    }
-  }
-
-  calculateCharacterFrequency(text) {
-    const freq = new Map();
-    const total = text.length;
-    
-    for (const char of text.toLowerCase()) {
-      freq.set(char, (freq.get(char) || 0) + 1);
-    }
-    
-    // Convert to percentages
-    for (const [char, count] of freq) {
-      freq.set(char, count / total);
-    }
-    
-    return freq;
-  }
-
-  calculateLanguageScore(charFreq, language) {
-    // Language character frequency patterns (simplified)
-    const patterns = {
-      ENG: new Map([['e', 0.13], ['t', 0.09], ['a', 0.08], ['o', 0.08], ['i', 0.07]]),
-      ESP: new Map([['e', 0.14], ['a', 0.12], ['o', 0.09], ['s', 0.08], ['n', 0.07]]),
-      FRA: new Map([['e', 0.15], ['a', 0.08], ['s', 0.08], ['i', 0.07], ['t', 0.07]]),
-      DEU: new Map([['e', 0.16], ['n', 0.10], ['i', 0.08], ['s', 0.07], ['r', 0.07]]),
-      // Add patterns for other languages
-    };
-    
-    const pattern = patterns[language];
-    if (!pattern) return 0;
-    
-    let score = 0;
-    for (const [char, expectedFreq] of pattern) {
-      const actualFreq = charFreq.get(char) || 0;
-      score += 1 - Math.abs(expectedFreq - actualFreq);
-    }
-    
-    return score / pattern.size;
-  }
-
-  isRTL(language) {
-    const rtlLanguages = new Set(['ARA', 'HEB', 'FAR']);
-    return rtlLanguages.has(language);
-  }
-
-  getLanguageFont(language) {
-    const fontMap = {
-      CHN: "'Noto Sans SC', sans-serif",
-      JPN: "'Noto Sans JP', sans-serif",
-      KOR: "'Noto Sans KR', sans-serif",
-      // Add other language-specific fonts
-    };
-    return fontMap[language] || 'inherit';
-  }
+module.exports = { LanguageManager }; 
 } 

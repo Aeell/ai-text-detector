@@ -4,18 +4,44 @@ import { StorageService } from '../services/StorageService';
 import { AnalyticsService } from '../services/AnalyticsService';
 import { Debug } from '../utils/Debug';
 
+const { marked } = require('marked');
+const DOMPurify = require('dompurify');
+
 export class UIController {
-  constructor() {
+  constructor(aiDetector, storageService, analyticsService) {
+    this.debug = new Debug('UIController');
+    this.aiDetector = aiDetector;
+    this.storage = storageService;
+    this.analytics = analyticsService;
+    
+    // Cache DOM elements
+    this.elements = {
+      textInput: document.getElementById('textInput'),
+      analyzeBtn: document.getElementById('analyzeBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      results: document.getElementById('results'),
+      loading: document.getElementById('loadingIndicator'),
+      error: document.getElementById('error'),
+      aiProbability: document.getElementById('aiProbability'),
+      confidenceScore: document.getElementById('confidenceScore'),
+      detectedLanguage: document.getElementById('detectedLanguage'),
+      textMetrics: document.getElementById('textMetrics'),
+      themeToggle: document.getElementById('themeToggle'),
+      languageSelect: document.getElementById('languageSelect'),
+      settingsModal: document.getElementById('settingsModal'),
+      saveSettings: document.getElementById('saveSettings'),
+      closeSettings: document.getElementById('closeSettings')
+    };
+
+    this.preferences = this.storage.getUserPreferences();
     this.languageManager = new LanguageManager();
-    this.storage = new StorageService();
-    this.analytics = new AnalyticsService();
-    this.debug = Debug;
+    this.setupMarkdownRenderer();
     this.initialize();
   }
 
   async initialize() {
     try {
-      this.setupEventListeners();
+      this.bindEventListeners();
       await this.loadUserPreferences();
       this.setupTheme();
       this.setupLanguage();
@@ -27,63 +53,51 @@ export class UIController {
     }
   }
 
-  setupEventListeners() {
-    try {
-      // Text input handling
-      const textInput = document.getElementById('inputText');
-      if (textInput) {
-        textInput.addEventListener('input', this.handleTextInput.bind(this));
-        textInput.addEventListener('paste', this.handlePaste.bind(this));
-      }
+  setupMarkdownRenderer() {
+    marked.setOptions({
+      renderer: new marked.Renderer(),
+      gfm: true,
+      breaks: true,
+      sanitize: false,
+      smartLists: true,
+      smartypants: true
+    });
+  }
 
-      // Analysis button
-      const analyzeBtn = document.getElementById('analyzeBtn');
-      if (analyzeBtn) {
-        analyzeBtn.addEventListener('click', this.handleAnalyze.bind(this));
+  bindEventListeners() {
+    // Analyze text
+    this.elements.analyzeBtn.addEventListener('click', () => this.handleAnalyze());
+    this.elements.textInput.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        this.handleAnalyze();
       }
+    });
 
-      // Compare functionality
-      const compareBtn = document.getElementById('compareBtn');
-      if (compareBtn) {
-        compareBtn.addEventListener('click', this.handleCompare.bind(this));
-      }
+    // Clear text
+    this.elements.clearBtn.addEventListener('click', () => this.handleClear());
 
-      // Language selection
-      const langSelect = document.getElementById('langSelect');
-      if (langSelect) {
-        langSelect.addEventListener('change', this.handleLanguageChange.bind(this));
-      }
+    // Theme toggle
+    this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
 
-      // Theme toggle
-      const themeToggle = document.getElementById('themeToggle');
-      if (themeToggle) {
-        themeToggle.addEventListener('click', this.handleThemeToggle.bind(this));
-      }
+    // Language selection
+    this.elements.languageSelect.addEventListener('change', (e) => 
+      this.handleLanguageChange(e.target.value)
+    );
 
-      // Export options
-      const exportBtn = document.getElementById('exportBtn');
-      if (exportBtn) {
-        exportBtn.addEventListener('click', this.handleExport.bind(this));
-      }
+    // Settings
+    this.elements.saveSettings.addEventListener('click', () => this.saveSettings());
+    this.elements.closeSettings.addEventListener('click', () => this.closeSettings());
 
-      // Share functionality
-      const shareBtn = document.getElementById('shareBtn');
-      if (shareBtn) {
-        shareBtn.addEventListener('click', this.handleShare.bind(this));
-      }
-
-      this.debug.logger.info('Event listeners setup complete');
-    } catch (error) {
-      this.debug.logger.error('Error setting up event listeners:', error);
-      throw error;
-    }
+    // Handle errors gracefully
+    window.addEventListener('error', (e) => this.handleError(e));
+    window.addEventListener('unhandledrejection', (e) => this.handleError(e));
   }
 
   async loadUserPreferences() {
     try {
       const preferences = await this.storage.getUserPreferences();
       if (preferences) {
-        this.applyUserPreferences(preferences);
+        this.applyPreferences(preferences);
       }
     } catch (error) {
       this.debug.logger.error('Error loading user preferences:', error);
@@ -91,7 +105,7 @@ export class UIController {
     }
   }
 
-  applyUserPreferences(preferences) {
+  applyPreferences(preferences) {
     try {
       const { theme, language, fontSize, accessibility } = preferences;
       
@@ -139,111 +153,106 @@ export class UIController {
     }
   }
 
-  async handleTextInput(event) {
-    try {
-      const text = event.target.value;
-      this.updateWordCount(text);
-      await this.autoSave(text);
-      this.analytics.trackTextInput(text.length);
-    } catch (error) {
-      this.debug.logger.error('Error handling text input:', error);
-      this.showError('Error processing text input');
-    }
-  }
-
   async handleAnalyze() {
-    try {
-      const text = document.getElementById('inputText')?.value;
-      if (!text) {
-        this.showError('Please enter text to analyze');
-        return;
-      }
+    const text = this.elements.textInput.value.trim();
+    
+    if (!text) {
+      this.showError('Please enter some text to analyze.');
+      return;
+    }
 
+    try {
       this.showLoading();
-      const results = await this.analyzeText(text);
+      this.analytics.trackEvent('analyze_text', { length: text.length });
+
+      const startTime = performance.now();
+      const results = await this.aiDetector.analyzeText(text);
+      const endTime = performance.now();
+
+      this.analytics.trackPerformance('analysis_time', endTime - startTime);
       this.displayResults(results);
-      this.analytics.trackAnalysis(results);
     } catch (error) {
-      this.debug.logger.error('Error handling analysis:', error);
-      this.showError('Error analyzing text');
+      this.debug.logger.error('Analysis failed:', error);
+      this.showError('Failed to analyze text. Please try again.');
     } finally {
       this.hideLoading();
     }
   }
 
   displayResults(results) {
-    try {
-      const { aiProbability, confidence, analysis } = results;
-      
-      // Update UI elements
-      this.updateProbabilityDisplay(aiProbability, confidence);
-      this.updateAnalysisDetails(analysis);
-      this.highlightAIPatterns(analysis);
-      
-      // Show results section
-      document.getElementById('results')?.classList.remove('hidden');
-      
-      this.debug.logger.info('Results displayed successfully');
-    } catch (error) {
-      this.debug.logger.error('Error displaying results:', error);
-      this.showError('Error displaying results');
-    }
-  }
-
-  updateProbabilityDisplay(probability, confidence) {
-    const probabilityEl = document.getElementById('aiProbability');
-    const confidenceEl = document.getElementById('confidence');
+    this.hideError();
     
-    if (probabilityEl) {
-      probabilityEl.textContent = `${probability}%`;
-      probabilityEl.className = this.getProbabilityClass(probability);
+    // Update main metrics
+    this.elements.aiProbability.textContent = 
+      `${(results.aiProbability * 100).toFixed(1)}%`;
+    this.elements.confidenceScore.textContent = 
+      `${(results.confidence * 100).toFixed(1)}%`;
+    this.elements.detectedLanguage.textContent = 
+      results.language.name || results.language.code;
+
+    // Update detailed metrics
+    this.elements.textMetrics.innerHTML = this.generateMetricsHTML(results.metrics);
+
+    // Show results
+    this.elements.results.classList.remove('hidden');
+
+    // Track successful analysis
+    this.analytics.trackEvent('results_displayed', {
+      aiProbability: results.aiProbability,
+      confidence: results.confidence,
+      language: results.language.code
+    });
+  }
+
+  generateMetricsHTML(metrics) {
+    return Object.entries(metrics)
+      .map(([key, value]) => `
+        <div class="metric">
+          <h3>${this.formatMetricName(key)}</h3>
+          <div class="metric-value">${this.formatMetricValue(value)}</div>
+        </div>
+      `)
+      .join('');
+  }
+
+  formatMetricName(key) {
+    return key
+      .split(/(?=[A-Z])/)
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  formatMetricValue(value) {
+    if (typeof value === 'number') {
+      return value.toFixed(2);
     }
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+    return value.toString();
+  }
+
+  handleClear() {
+    this.elements.textInput.value = '';
+    this.elements.results.classList.add('hidden');
+    this.elements.error.classList.add('hidden');
+    this.analytics.trackEvent('clear_text');
+  }
+
+  toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
     
-    if (confidenceEl) {
-      confidenceEl.textContent = `Confidence: ${confidence}%`;
-    }
+    document.documentElement.setAttribute('data-theme', newTheme);
+    this.preferences.theme = newTheme;
+    this.storage.saveUserPreferences(this.preferences);
+    this.analytics.trackEvent('theme_change', { theme: newTheme });
   }
 
-  getProbabilityClass(probability) {
-    if (probability >= 80) return 'high-probability';
-    if (probability >= 50) return 'medium-probability';
-    return 'low-probability';
-  }
-
-  showError(message) {
-    const errorEl = document.getElementById('error');
-    if (errorEl) {
-      errorEl.textContent = message;
-      errorEl.classList.remove('hidden');
-      setTimeout(() => errorEl.classList.add('hidden'), 5000);
-    }
-  }
-
-  showLoading() {
-    const loader = document.getElementById('loader');
-    if (loader) loader.classList.remove('hidden');
-  }
-
-  hideLoading() {
-    const loader = document.getElementById('loader');
-    if (loader) loader.classList.add('hidden');
-  }
-
-  async autoSave(text) {
-    try {
-      await this.storage.saveText(text);
-    } catch (error) {
-      this.debug.logger.error('Error auto-saving text:', error);
-      // Silent fail - don't interrupt user
-    }
-  }
-
-  updateWordCount(text) {
-    const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
-    const wordCountEl = document.getElementById('wordCount');
-    if (wordCountEl) {
-      wordCountEl.textContent = `Words: ${wordCount}`;
-    }
+  handleLanguageChange(language) {
+    this.preferences.language = language;
+    this.storage.saveUserPreferences(this.preferences);
+    this.analytics.trackEvent('language_change', { language });
   }
 
   setTheme(theme) {
@@ -289,4 +298,92 @@ export class UIController {
       }
     });
   }
-} 
+
+  showLoading() {
+    this.elements.loading.classList.remove('hidden');
+    this.elements.analyzeBtn.disabled = true;
+  }
+
+  hideLoading() {
+    this.elements.loading.classList.add('hidden');
+    this.elements.analyzeBtn.disabled = false;
+  }
+
+  showError(message) {
+    this.elements.error.textContent = message;
+    this.elements.error.classList.remove('hidden');
+    this.debug.logger.error(message);
+  }
+
+  hideError() {
+    this.elements.error.classList.add('hidden');
+  }
+
+  handleError(error) {
+    this.debug.logger.error('Unhandled error:', error);
+    this.showError('An unexpected error occurred. Please try again.');
+    this.analytics.trackEvent('error', {
+      message: error.message,
+      stack: error.stack
+    });
+  }
+
+  async handleExport() {
+    try {
+      const text = this.elements.textInput.value;
+      await this.storage.saveText(text);
+      this.showNotification('Text saved successfully');
+    } catch (error) {
+      this.debug.logger.error('Error handling export:', error);
+      this.showError('Error saving text');
+    }
+  }
+
+  showNotification(message, type = 'info') {
+    const toast = document.getElementById('notificationToast');
+    if (!toast) return;
+
+    const messageElement = toast.querySelector('p');
+    if (messageElement) {
+      messageElement.textContent = message;
+    }
+
+    toast.className = `notification-toast ${type}`;
+    toast.setAttribute('aria-hidden', 'false');
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      this.hideNotification();
+    }, 5000);
+  }
+
+  hideNotification() {
+    const toast = document.getElementById('notificationToast');
+    if (toast) {
+      toast.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  saveSettings() {
+    const newPreferences = {
+      ...this.preferences,
+      fontSize: document.getElementById('fontSize').value,
+      accessibility: {
+        highContrast: document.getElementById('highContrast').checked,
+        reducedMotion: document.getElementById('reducedMotion').checked
+      }
+    };
+
+    this.preferences = newPreferences;
+    this.storage.saveUserPreferences(newPreferences);
+    this.applyPreferences(newPreferences);
+    this.closeSettings();
+    this.analytics.trackEvent('settings_saved', newPreferences);
+  }
+
+  closeSettings() {
+    this.elements.settingsModal.classList.add('hidden');
+  }
+}
+
+module.exports = { UIController }; 

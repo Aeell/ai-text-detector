@@ -1,40 +1,81 @@
 {
   "name": "ai-text-detector",
   "version": "1.0.0",
-  "description": "Advanced AI text detection tool with multilingual support",
-  "main": "src/js/app.js",
-  "type": "module",
+  "description": "Advanced tool for detecting AI-generated text with high accuracy and multilingual support",
+  "main": "src/js/main.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "vitest",
+    "start": "webpack serve --mode development --open",
+    "build": "webpack --mode production",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "lint": "eslint src/**/*.js",
-    "format": "prettier --write src/**/*.{js,css,html}",
-    "analyze": "vite-bundle-analyzer"
+    "format": "prettier --write src/**/*.{js,html,css,json}",
+    "prepare": "husky install"
   },
   "keywords": [
     "ai",
-    "text-detection",
+    "text",
+    "detector",
     "nlp",
-    "machine-learning"
+    "machine-learning",
+    "language-processing"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "natural": "^6.10.4",
-    "compromise": "^14.10.1",
-    "languagedetect": "^2.0.0",
-    "marked": "^11.1.1",
-    "dompurify": "^3.0.8"
+    "compromise": "^14.8.2",
+    "franc": "^6.1.0",
+    "natural": "^6.5.0"
   },
   "devDependencies": {
-    "vite": "^5.0.11",
-    "vitest": "^1.2.1",
-    "eslint": "^8.56.0",
-    "prettier": "^3.2.2",
-    "vite-bundle-analyzer": "^0.8.1",
-    "@typescript-eslint/eslint-plugin": "^6.18.1",
-    "@typescript-eslint/parser": "^6.18.1"
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@testing-library/dom": "^9.3.1",
+    "@testing-library/jest-dom": "^5.16.5",
+    "babel-loader": "^9.1.2",
+    "css-loader": "^6.8.1",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "html-webpack-plugin": "^5.5.3",
+    "jest": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0",
+    "mini-css-extract-plugin": "^2.7.6",
+    "prettier": "^2.8.8",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "husky": "^8.0.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setupTests.js"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all",
+      "last 2 versions",
+      "not ie <= 11",
+      "not android <= 4.4",
+      "not samsung <= 4"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   }
 }

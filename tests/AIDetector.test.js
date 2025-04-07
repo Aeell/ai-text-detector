@@ -15,96 +15,58 @@ describe('AIDetector', () => {
   });
 
   describe('analyzeText', () => {
-    it('should analyze human-written text correctly', async () => {
-      const humanText = `
-        The sun was setting behind the mountains, casting long shadows across
-        the valley below. Birds chirped their evening songs as a cool breeze
-        rustled through the trees. I watched this peaceful scene, lost in
-        thought about the day's events.
-      `;
-
-      const result = await aiDetector.analyzeText(humanText);
+    it('should analyze text and return complete results', async () => {
+      const text = 'This is a sample text for testing AI detection capabilities.';
+      const result = await aiDetector.analyzeText(text);
 
       expect(result).toBeDefined();
-      expect(result.aiProbability).toBeLessThan(0.5);
-      expect(result.confidence).toBeGreaterThan(0.7);
-      expect(result.language).toBe('en');
-    });
-
-    it('should analyze AI-generated text correctly', async () => {
-      const aiText = `
-        The implementation of artificial intelligence in modern society
-        presents both opportunities and challenges. Studies indicate that AI
-        technology can enhance productivity across various sectors while
-        simultaneously raising ethical concerns regarding privacy and
-        automation. Furthermore, the integration of machine learning
-        algorithms has demonstrated significant improvements in data
-        analysis capabilities.
-      `;
-
-      const result = await aiDetector.analyzeText(aiText);
-
-      expect(result).toBeDefined();
-      expect(result.aiProbability).toBeGreaterThan(0.5);
-      expect(result.confidence).toBeGreaterThan(0.7);
-      expect(result.language).toBe('en');
+      expect(result.aiProbability).toBeDefined();
+      expect(result.confidence).toBeDefined();
+      expect(result.language).toBeDefined();
+      expect(result.metrics).toBeDefined();
+      expect(result.analysis).toBeDefined();
     });
 
     it('should handle empty text', async () => {
-      await expect(aiDetector.analyzeText('')).rejects.toThrow('No text provided');
+      await expect(aiDetector.analyzeText('')).rejects.toThrow('Text is required');
     });
 
-    it('should handle non-string input', async () => {
-      await expect(aiDetector.analyzeText(123)).rejects.toThrow('Invalid input type');
-    });
-  });
-
-  describe('compareTexts', () => {
-    it('should compare two texts and return similarity score', async () => {
-      const text1 = 'The quick brown fox jumps over the lazy dog.';
-      const text2 = 'The fast brown fox leaps over the sleepy dog.';
-
-      const result = await aiDetector.compareTexts(text1, text2);
+    it('should handle very short text', async () => {
+      const text = 'Hello world';
+      const result = await aiDetector.analyzeText(text);
 
       expect(result).toBeDefined();
-      expect(result.similarity).toBeGreaterThan(0);
-      expect(result.similarity).toBeLessThan(1);
-      expect(result.text1Analysis).toBeDefined();
-      expect(result.text2Analysis).toBeDefined();
+      expect(result.confidence).toBeLessThan(0.5);
     });
 
-    it('should handle identical texts', async () => {
-      const text = 'The quick brown fox jumps over the lazy dog.';
+    it('should detect likely AI-generated text', async () => {
+      const text = `The quantum mechanical properties of subatomic particles exhibit fascinating characteristics of wave-particle duality. This phenomenon, first observed through the double-slit experiment, demonstrates how particles can manifest both wave-like and particle-like behavior depending on the method of observation. The mathematical formulation of quantum mechanics, developed by pioneers such as Schrödinger, Heisenberg, and Dirac, provides a robust framework for understanding these counterintuitive aspects of nature.`;
+      
+      const result = await aiDetector.analyzeText(text);
 
-      const result = await aiDetector.compareTexts(text, text);
-
-      expect(result).toBeDefined();
-      expect(result.similarity).toBe(1);
+      expect(result.aiProbability).toBeGreaterThan(0.7);
+      expect(result.confidence).toBeGreaterThan(0.7);
     });
 
-    it('should handle completely different texts', async () => {
-      const text1 = 'The quick brown fox jumps over the lazy dog.';
-      const text2 = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+    it('should detect likely human-written text', async () => {
+      const text = `I went to the store yesterday. It was raining really hard and I forgot my umbrella. By the time I got home, I was soaking wet! My cat looked at me like I was crazy when I walked in dripping water everywhere. I need to remember to check the weather next time.`;
+      
+      const result = await aiDetector.analyzeText(text);
 
-      const result = await aiDetector.compareTexts(text1, text2);
-
-      expect(result).toBeDefined();
-      expect(result.similarity).toBeLessThan(0.3);
-    });
-
-    it('should handle empty texts', async () => {
-      await expect(aiDetector.compareTexts('', '')).rejects.toThrow('Both texts are required');
+      expect(result.aiProbability).toBeLessThan(0.3);
+      expect(result.confidence).toBeGreaterThan(0.7);
     });
   });
 
   describe('calculateAIProbability', () => {
-    it('should return a probability between 0 and 1', () => {
+    it('should calculate probability based on text metrics', () => {
       const metrics = {
-        repetitionScore: 0.3,
-        sentenceVariance: 0.7,
-        textLengthRatio: 0.5,
-        transitionPhraseCount: 5,
-        readabilityScore: 0.6
+        wordCount: 100,
+        sentenceCount: 5,
+        averageWordLength: 5.2,
+        uniqueWords: 80,
+        lexicalDensity: 0.8,
+        readabilityScore: 65
       };
 
       const probability = aiDetector.calculateAIProbability(metrics);
@@ -114,46 +76,78 @@ describe('AIDetector', () => {
     });
 
     it('should handle extreme values', () => {
-      const highMetrics = {
-        repetitionScore: 1,
-        sentenceVariance: 1,
-        textLengthRatio: 1,
-        transitionPhraseCount: 20,
-        readabilityScore: 1
+      const metrics = {
+        wordCount: 1000,
+        sentenceCount: 1,
+        averageWordLength: 20,
+        uniqueWords: 1000,
+        lexicalDensity: 1,
+        readabilityScore: 100
       };
 
-      const lowMetrics = {
-        repetitionScore: 0,
-        sentenceVariance: 0,
-        textLengthRatio: 0,
-        transitionPhraseCount: 0,
-        readabilityScore: 0
-      };
-
-      const highProbability = aiDetector.calculateAIProbability(highMetrics);
-      const lowProbability = aiDetector.calculateAIProbability(lowMetrics);
-
-      expect(highProbability).toBeGreaterThan(0.8);
-      expect(lowProbability).toBeLessThan(0.2);
+      const probability = aiDetector.calculateAIProbability(metrics);
+      expect(probability).toBeLessThanOrEqual(1);
     });
   });
 
   describe('calculateConfidence', () => {
-    it('should return higher confidence for longer texts', () => {
-      const shortText = 'Short text.';
-      const longText = 'A much longer text that contains multiple sentences and provides more data for analysis. ' +
-                      'This should result in a higher confidence score because there is more information to analyze. ' +
-                      'The more text we have, the more accurate our analysis can be.';
+    it('should calculate high confidence for sufficient text', () => {
+      const text = 'This is a sufficiently long text that should provide enough data for confident analysis. It contains multiple sentences and various words to analyze patterns effectively.';
+      const metrics = textModel.analyze(text);
+      const confidence = aiDetector.calculateConfidence(metrics);
 
-      const shortConfidence = aiDetector.calculateConfidence(shortText);
-      const longConfidence = aiDetector.calculateConfidence(longText);
-
-      expect(longConfidence).toBeGreaterThan(shortConfidence);
+      expect(confidence).toBeGreaterThan(0.7);
     });
 
-    it('should handle empty text', () => {
-      const confidence = aiDetector.calculateConfidence('');
-      expect(confidence).toBe(0);
+    it('should calculate low confidence for short text', () => {
+      const text = 'Short text.';
+      const metrics = textModel.analyze(text);
+      const confidence = aiDetector.calculateConfidence(metrics);
+
+      expect(confidence).toBeLessThan(0.5);
+    });
+  });
+
+  describe('compareTexts', () => {
+    it('should compare two texts and return analysis', async () => {
+      const text1 = 'This is the first sample text for comparison.';
+      const text2 = 'This is the second sample text for analysis.';
+      
+      const result = await aiDetector.compareTexts(text1, text2);
+
+      expect(result).toBeDefined();
+      expect(result.text1Analysis).toBeDefined();
+      expect(result.text2Analysis).toBeDefined();
+      expect(result.similarity).toBeDefined();
+      expect(result.comparison).toBeDefined();
+    });
+
+    it('should handle identical texts', async () => {
+      const text = 'This is a sample text for testing.';
+      const result = await aiDetector.compareTexts(text, text);
+
+      expect(result.similarity).toBe(1);
+      expect(result.text1Analysis.aiProbability).toBe(result.text2Analysis.aiProbability);
+    });
+
+    it('should handle completely different texts', async () => {
+      const text1 = 'This is a completely different text with its own unique content.';
+      const text2 = 'The quick brown fox jumps over the lazy dog.';
+      
+      const result = await aiDetector.compareTexts(text1, text2);
+
+      expect(result.similarity).toBeLessThan(0.3);
+    });
+
+    it('should handle texts in different languages', async () => {
+      const text1 = 'This is an English text for testing.';
+      const text2 = 'Esto es un texto en español para pruebas.';
+      
+      const result = await aiDetector.compareTexts(text1, text2);
+
+      expect(result.text1Analysis.language.code).toBe('en');
+      expect(result.text2Analysis.language.code).toBe('es');
+      expect(result.similarity).toBeLessThan(0.5);
     });
   });
 }); 

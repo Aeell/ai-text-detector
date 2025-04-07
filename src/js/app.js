@@ -1,12 +1,12 @@
 // app.js - Main application entry point
-import { AIDetector } from './AIDetector';
-import { UIController } from './UIController';
-import { LanguageManager } from './LanguageManager';
-import { TextModel } from '../models/TextModel';
-import { LanguageModel } from '../models/LanguageModel';
-import { StorageService } from '../services/StorageService';
-import { AnalyticsService } from '../services/AnalyticsService';
-import { Debug } from '../utils/Debug';
+const { AIDetector } = require('./AIDetector');
+const { UIController } = require('./UIController');
+const { LanguageManager } = require('./LanguageManager');
+const { TextModel } = require('../models/TextModel');
+const { LanguageModel } = require('../models/LanguageModel');
+const { StorageService } = require('../services/StorageService');
+const { AnalyticsService } = require('../services/AnalyticsService');
+const { Debug } = require('../utils/Debug');
 
 class App {
   constructor() {
@@ -352,4 +352,4 @@ class App {
 const app = new App();
 
 // Export for testing
-export default app; 
+module.exports = app; 

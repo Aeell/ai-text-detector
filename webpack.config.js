@@ -1,195 +1,111 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
 
-module.exports = {
-  entry: {
-    main: './main.js',
-    'ai-detector': './ai-detector.js',
-    'ui-controller': './ui-controller.js'
-  },
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[contenthash].js',
-    clean: true,
-    publicPath: '/ai-text-detector/',
-    library: {
-      name: 'AITextDetector',
-      type: 'umd',
-      umdNamedDefine: true
+module.exports = (env, argv) => {
+  const isProduction = argv.mode === 'production';
+  
+  return {
+    entry: './src/js/main.js',
+    output: {
+      path: path.resolve(__dirname, 'dist'),
+      filename: 'js/[name].[contenthash].js',
+      clean: true
     },
-    globalObject: 'this'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['@babel/preset-env', {
-                targets: '> 0.25%, not dead',
-                useBuiltIns: 'usage',
-                corejs: 3,
-                modules: false
-              }]
-            ],
-            plugins: [
-              '@babel/plugin-transform-runtime',
-              '@babel/plugin-transform-modules-umd',
-              '@babel/plugin-syntax-dynamic-import'
-            ]
+    devtool: isProduction ? 'source-map' : 'eval-source-map',
+    devServer: {
+      static: {
+        directory: path.join(__dirname, 'dist'),
+      },
+      hot: true,
+      port: 3000,
+      open: true,
+      compress: true,
+      historyApiFallback: true,
+    },
+    module: {
+      rules: [
+        {
+          test: /\.js$/,
+          exclude: /node_modules/,
+          use: {
+            loader: 'babel-loader',
+            options: {
+              presets: ['@babel/preset-env']
+            }
           }
-        }
-      },
-      {
-        test: /\.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '../'
-            }
+        },
+        {
+          test: /\.css$/,
+          use: [
+            isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
+            'css-loader'
+          ]
+        },
+        {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'images/[name].[hash][ext]'
+          }
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: 'asset/resource',
+          generator: {
+            filename: 'fonts/[name].[hash][ext]'
+          }
+        },
+        {
+          test: /\.json$/,
+          type: 'asset/resource',
+          generator: {
+            filename: 'locales/[name].[hash][ext]'
           },
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-              sourceMap: true
-            }
-          },
-          'postcss-loader'
-        ]
-      },
-      {
-        test: /\.(png|svg|jpg|jpeg|gif|ico)$/i,
-        type: 'asset/resource',
-        generator: {
-          filename: 'images/[name].[hash][ext]'
-        }
-      },
-      {
-        test: /\.(woff|woff2|eot|ttf|otf)$/i,
-        type: 'asset/resource',
-        generator: {
-          filename: 'fonts/[name].[hash][ext]'
-        }
-      }
-    ]
-  },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'css/[name].[contenthash].css',
-      chunkFilename: 'css/[id].[contenthash].css'
-    }),
-    new HtmlWebpackPlugin({
-      template: './index.html',
-      filename: 'index.html',
-      chunks: ['main'],
-      minify: false,
-      inject: 'body',
-      scriptLoading: 'blocking',
-      favicon: './favicon.ico'
-    }),
-    new HtmlWebpackPlugin({
-      template: './blog.html',
-      filename: 'blog.html',
-      chunks: ['main'],
-      minify: false,
-      inject: 'body',
-      scriptLoading: 'blocking',
-      favicon: './favicon.ico'
-    }),
-    new HtmlWebpackPlugin({
-      template: './educators.html',
-      filename: 'educators.html',
-      chunks: ['main'],
-      minify: false,
-      inject: 'body',
-      scriptLoading: 'blocking',
-      favicon: './favicon.ico'
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
-        { 
-          from: 'sherlock-ai-background.jpg',
-          to: 'images/sherlock-ai-background.jpg'
-        },
-        {
-          from: '_headers',
-          to: '_headers'
-        },
-        {
-          from: 'service-worker.js',
-          to: 'service-worker.js'
-        },
-        {
-          from: 'favicon.ico',
-          to: 'favicon.ico'
+          include: path.resolve(__dirname, 'src/locales')
         }
       ]
-    })
-  ],
-  optimization: {
-    moduleIds: 'deterministic',
-    runtimeChunk: 'single',
-    splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: Infinity,
-      minSize: 0,
-      cacheGroups: {
-        vendor: {
-          test: /[\\/]node_modules[\\/]/,
-          name(module) {
-            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
-            return `vendor.${packageName.replace('@', '')}`;
+    },
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: './src/html/index.html',
+        filename: 'index.html',
+        minify: isProduction,
+        favicon: './src/favicon.ico'
+      }),
+      ...(isProduction ? [new MiniCssExtractPlugin({
+        filename: 'css/[name].[contenthash].css'
+      })] : [])
+    ],
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all'
           }
         }
-      }
-    },
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          format: {
-            comments: false,
-          },
-          compress: {
-            drop_console: process.env.NODE_ENV === 'production',
-            drop_debugger: process.env.NODE_ENV === 'production'
-          }
-        },
-        extractComments: false
+      },
+      ...(isProduction && {
+        minimize: true
       })
-    ]
-  },
-  resolve: {
-    extensions: ['.js'],
-    modules: ['node_modules'],
-    fallback: {
-      "path": false,
-      "fs": false
-    }
-  },
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
     },
-    compress: true,
-    port: 9000,
-    hot: true,
-    historyApiFallback: {
-      rewrites: [
-        { from: /^\/ai-text-detector\//, to: '/index.html' }
-      ]
+    resolve: {
+      extensions: ['.js', '.json'],
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+        '@js': path.resolve(__dirname, 'src/js'),
+        '@css': path.resolve(__dirname, 'src/css'),
+        '@html': path.resolve(__dirname, 'src/html'),
+        '@locales': path.resolve(__dirname, 'src/locales')
+      }
+    },
+    performance: {
+      hints: isProduction ? 'warning' : false,
+      maxAssetSize: 512000,
+      maxEntrypointSize: 512000
     }
-  },
-  stats: {
-    errorDetails: true
-  },
-  devtool: process.env.NODE_ENV === 'production' ? 'source-map' : 'eval-source-map'
+  };
 }; 

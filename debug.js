@@ -334,7 +334,7 @@ const debugUI = {
   },
   
   createDebugOptions: function() {
-    const container = document.createElement('div');
+      const container = document.createElement('div');
     container.style.margin = '5px 0';
     
     const options = [

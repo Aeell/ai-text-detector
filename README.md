@@ -1,133 +1,167 @@
 # AI Text Detector
 
-A modern web application for detecting AI-generated text using advanced natural language processing techniques. The application provides multilingual support and features an accessible, responsive user interface.
+Advanced tool for detecting AI-generated text with high accuracy and multilingual support.
 
-## Features
+## 🚀 Quick Start
 
-- 🤖 Advanced AI text detection
-- 🌐 Multilingual support
-- 📊 Detailed analysis metrics
-- 🔄 Text comparison functionality
-- 🎨 Modern, responsive UI
-- ♿ Comprehensive accessibility features
-- 🌓 Light/Dark theme support
-- 🔒 Privacy-focused design
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm (v9 or higher)
-
-### Installation
-
-1. Clone the repository:
 ```bash
+# Clone the repository
 git clone https://github.com/yourusername/ai-text-detector.git
-cd ai-text-detector
-```
 
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
+
+# Create environment file
+cp .env.example .env
+
+# Start development server
+npm start
 ```
 
-3. Start the development server:
-```bash
-npm run dev
-```
-
-The application will be available at `http://localhost:3000`.
-
-### Building for Production
-
-To create a production build:
+## 🛠️ Development
 
 ```bash
+# Run tests
+npm test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run linting
+npm run lint
+
+# Format code
+npm run format
+
+# Build for production
 npm run build
 ```
 
-The built files will be available in the `dist` directory.
+## 🔄 Recent Updates & Improvements
 
-## Project Structure
+1. Performance Optimizations
+   - Implemented caching for text analysis results
+   - Added batch processing for large texts
+   - Optimized language detection algorithms
 
-```
-ai-text-detector/
-├── src/
-│   ├── assets/        # Static assets
-│   ├── css/          # Stylesheets
-│   ├── html/         # HTML templates
-│   ├── js/           # JavaScript modules
-│   │   ├── models/   # Data models
-│   │   ├── services/ # Services
-│   │   └── utils/    # Utilities
-│   └── locales/      # Translation files
-├── dist/             # Built files
-├── tests/            # Test files
-└── package.json      # Project configuration
-```
+2. Security Enhancements
+   - Added rate limiting for API endpoints
+   - Implemented CORS protection
+   - Added input sanitization
 
-## Development
+3. User Experience
+   - Added dark mode support
+   - Improved mobile responsiveness
+   - Enhanced error messages
+   - Added loading indicators
 
-### Available Scripts
+4. Testing & Quality
+   - Added comprehensive test suite
+   - Implemented CI/CD pipeline
+   - Added code coverage reporting
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run test` - Run tests
-- `npm run lint` - Lint code
-- `npm run format` - Format code
-- `npm run analyze` - Analyze bundle size
+## 🔜 Planned Improvements
 
-### Code Style
+1. Technical Enhancements
+   - [ ] Implement service workers for offline support
+   - [ ] Add WebAssembly modules for performance-critical operations
+   - [ ] Implement progressive loading for large texts
+   - [ ] Add Redis caching for API responses
 
-This project uses ESLint and Prettier for code formatting and maintains consistent coding standards. The configuration can be found in `.eslintrc.json`.
+2. Features
+   - [ ] Add support for PDF analysis
+   - [ ] Implement real-time collaboration
+   - [ ] Add export functionality for analysis results
+   - [ ] Implement custom model training options
 
-## Testing
+3. Developer Experience
+   - [ ] Add TypeScript support
+   - [ ] Implement Storybook for component documentation
+   - [ ] Add API documentation with Swagger
+   - [ ] Implement E2E tests with Cypress
 
-Tests are written using Vitest. Run the test suite with:
+## 📊 Performance Metrics
 
+- First Contentful Paint: < 1.5s
+- Time to Interactive: < 2s
+- Lighthouse Score: > 90
+- Test Coverage: > 80%
+
+## 🤝 Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🌟 Features
+
+- **Advanced Detection Algorithm**: Combines multiple text analysis methods for high accuracy
+- **Multilingual Support**: Works with English, Spanish, French, German, and more
+- **Detailed Analysis**: Provides comprehensive metrics about the analyzed text
+- **Text Comparison**: Compare two texts to determine similarity and AI probability for each
+- **User-Friendly Interface**: Clean, responsive design with multiple themes
+- **Accessibility Features**: High contrast mode, font size adjustment, and reduced motion
+- **Offline Capability**: Can analyze text without an internet connection
+- **Privacy-Focused**: Analysis performed locally in the browser
+
+## 📋 Requirements
+
+- Node.js 14+
+- npm or yarn
+
+## 🧪 Testing
+
+Run the test suite:
 ```bash
-npm run test
+npm test
 ```
 
-## Accessibility
+Run tests with coverage:
+```bash
+npm run test:coverage
+```
 
-The application is built with accessibility in mind and includes:
+## 💻 Usage
 
-- ARIA labels and roles
-- Keyboard navigation
-- High contrast mode
-- Font size controls
-- Screen reader support
-- Reduced motion support
+1. Enter or paste text into the text input area
+2. Click "Analyze Text" button
+3. View results showing AI probability and confidence metrics
+4. For comparison, use the "Compare Texts" section to analyze two texts side by side
 
-## Browser Support
+## 🔧 Core Modules
 
-The application supports all modern browsers:
+- **AIDetector**: Main module for analyzing text and determining AI probability
+- **TextModel**: Analyzes textual characteristics like word frequencies, readability, and syntax
+- **LanguageModel**: Handles language-specific analysis and detection
+- **UIController**: Manages user interface interactions and updates
+- **LanguageManager**: Provides multilingual support and translations
+- **StorageService**: Handles data persistence and user preferences
+- **AnalyticsService**: Optional usage tracking with privacy controls
 
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
+## 🔍 How It Works
 
-## Contributing
+The AI Text Detector uses a combination of techniques to identify AI-generated text:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. **Statistical Analysis**: Examines patterns of word usage, sentence structure, and text complexity
+2. **Linguistic Features**: Analyzes language-specific features and patterns
+3. **Semantic Coherence**: Evaluates the logical flow and consistency of content
+4. **Comparative Analysis**: Compares texts against known patterns of human vs. AI writing
 
-## License
+The tool generates a probability score indicating how likely the text was created by an AI system, along with a confidence level for the analysis.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🌐 Supported Languages
 
-## Acknowledgments
+- English (en)
+- Spanish (es)
+- French (fr)
+- German (de)
 
-- Natural.js for text processing
-- Compromise for NLP functionality
-- Marked for markdown processing
-- DOMPurify for security
-- Vite for build tooling
+## 🚧 Future Improvements
+
+- Add more languages
+- Improve detection accuracy for short texts
+- Integrate with additional AI detection techniques
+- Add API for programmatic access
+- Create browser extensions

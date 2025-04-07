@@ -131,7 +131,7 @@ function setupRealTimeAnalysis() {
   if (!inputText) return;
   
   const debouncedAnalysis = Utils.debounce(async () => {
-    if (inputText.value.trim().length > 50) {
+      if (inputText.value.trim().length > 50) {
       try {
         const result = await analyzeText(inputText.value);
         const ui = new UIController();
@@ -139,10 +139,10 @@ function setupRealTimeAnalysis() {
       } catch (error) {
         console.error('Error in real-time analysis:', error);
       }
-    }
-  }, 1000);
-  
-  inputText.addEventListener('input', debouncedAnalysis);
+      }
+    }, 1000);
+    
+    inputText.addEventListener('input', debouncedAnalysis);
 }
 
 /**
