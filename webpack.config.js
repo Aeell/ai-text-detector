@@ -11,9 +11,9 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].[contenthash].js',
+    filename: '[name].js',
     clean: true,
-    publicPath: '/ai-text-detector/'
+    publicPath: ''
   },
   module: {
     rules: [
@@ -31,12 +31,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: '/ai-text-detector/'
-            }
-          },
+          MiniCssExtractPlugin.loader,
           'css-loader',
           'postcss-loader'
         ]
@@ -45,14 +40,14 @@ module.exports = {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'images/[name].[hash][ext]'
+          filename: 'images/[name][ext]'
         }
       }
     ]
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css'
+      filename: '[name].css'
     }),
     new HtmlWebpackPlugin({
       template: './index.html',
@@ -84,17 +79,13 @@ module.exports = {
         {
           from: '_headers',
           to: '_headers'
-        },
-        {
-          from: '*.css',
-          to: '[name][ext]'
         }
       ]
     })
   ],
   optimization: {
     moduleIds: 'deterministic',
-    runtimeChunk: 'single',
+    runtimeChunk: false,
     splitChunks: {
       cacheGroups: {
         vendor: {
