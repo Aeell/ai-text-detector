@@ -67,11 +67,8 @@ async function initDB() {
   }
 }
 
-// Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize the application
-  initializeApp();
-});
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', initApp);
 
 /**
  * Initialize the application
@@ -229,9 +226,6 @@ async function initApp() {
   }
 }
 
-// Expose initApp to window object
-window.initApp = initApp;
-
 // Helper function to analyze text
 async function analyzeText(text) {
   if (!navigator.onLine) {
@@ -261,9 +255,6 @@ async function storeOfflineAnalysis(text) {
     await registration.sync.register('analyze-text');
   }
 }
-
-// Export for testing
-export { initTheme, toggleTheme, analyzeText };
 
 // Performance monitoring
 const performanceMetrics = {
@@ -369,3 +360,22 @@ function loadResource(resourceJson) {
 
 // Initialize optimizations
 optimizeResourceLoading();
+
+// Export functions for external use
+const AITextDetector = {
+  initApp,
+  initTheme,
+  toggleTheme,
+  analyzeText,
+  Utils,
+  AIDetector,
+  UIController
+};
+
+// Expose to window object and export
+if (typeof window !== 'undefined') {
+  window.AITextDetector = AITextDetector;
+  window.initApp = initApp;
+}
+
+export default AITextDetector;

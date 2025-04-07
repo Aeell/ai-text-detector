@@ -13,7 +13,13 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
     clean: true,
-    publicPath: '/ai-text-detector/'
+    publicPath: '/ai-text-detector/',
+    library: {
+      name: 'AITextDetector',
+      type: 'umd',
+      umdNamedDefine: true
+    },
+    globalObject: 'this'
   },
   module: {
     rules: [
@@ -27,10 +33,15 @@ module.exports = {
               ['@babel/preset-env', {
                 targets: '> 0.25%, not dead',
                 useBuiltIns: 'usage',
-                corejs: 3
+                corejs: 3,
+                modules: false
               }]
             ],
-            plugins: ['@babel/plugin-transform-runtime']
+            plugins: [
+              '@babel/plugin-transform-runtime',
+              '@babel/plugin-transform-modules-umd',
+              '@babel/plugin-syntax-dynamic-import'
+            ]
           }
         }
       },
@@ -65,21 +76,24 @@ module.exports = {
       filename: 'index.html',
       chunks: ['main'],
       minify: false,
-      inject: 'body'
+      inject: 'body',
+      scriptLoading: 'blocking'
     }),
     new HtmlWebpackPlugin({
       template: './blog.html',
       filename: 'blog.html',
       chunks: ['main'],
       minify: false,
-      inject: 'body'
+      inject: 'body',
+      scriptLoading: 'blocking'
     }),
     new HtmlWebpackPlugin({
       template: './educators.html',
       filename: 'educators.html',
       chunks: ['main'],
       minify: false,
-      inject: 'body'
+      inject: 'body',
+      scriptLoading: 'blocking'
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -96,7 +110,7 @@ module.exports = {
   ],
   optimization: {
     moduleIds: 'deterministic',
-    runtimeChunk: 'single',
+    runtimeChunk: false,
     splitChunks: {
       chunks: 'all',
       cacheGroups: {
@@ -110,7 +124,11 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js'],
-    modules: ['node_modules']
+    modules: ['node_modules'],
+    fallback: {
+      "path": false,
+      "fs": false
+    }
   },
   devServer: {
     static: {
