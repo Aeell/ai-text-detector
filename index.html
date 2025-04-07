@@ -23,17 +23,8 @@
     }
   </style>
   
-  <!-- CSS loading -->
-  <link rel="stylesheet" href="/ai-text-detector/main.css" type="text/css">
-  <link rel="stylesheet" href="/ai-text-detector/dark-theme.css" type="text/css">
-  <link rel="stylesheet" href="/ai-text-detector/responsive.css" type="text/css">
-  
   <!-- Async Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
-  <!-- Preload critical assets -->
-  <link rel="preload" href="/ai-text-detector/main.css" as="style">
-  <link rel="preload" href="/ai-text-detector/main.js" as="script">
   
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FWR9G2XB2W"></script>
@@ -43,6 +34,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FWR9G2XB2W');
   </script>
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- English SEO -->
   <meta name="description" content="Free AI Homework Detector with Word Counter, Repeating Words, and AI Text Checker - Detect AI-generated student work instantly for teachers, parents, and schools. Catch cheating now!">
@@ -161,24 +153,15 @@
   
   <!-- JavaScript loading -->
   <script>
-    // Load main.js as a module
-    const script = document.createElement('script');
-    script.type = 'module';
-    script.src = '/ai-text-detector/main.js';
-    script.onerror = (error) => {
-      console.error('Error loading main.js:', error);
-      document.body.innerHTML = '<h1>Error loading application. Please try refreshing the page.</h1>';
-    };
-    script.onload = () => {
-      window.addEventListener('DOMContentLoaded', () => {
-        if (window.initApp) {
-          window.initApp();
-        } else {
-          console.error('initApp not found in main.js');
-        }
-      });
-    };
-    document.head.appendChild(script);
+    // Initialize app after DOM content loads
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.initApp) {
+        window.initApp();
+      } else {
+        console.error('initApp not found');
+        document.body.innerHTML = '<h1>Error loading application. Please try refreshing the page.</h1>';
+      }
+    });
   </script>
 </body>
 </html>
