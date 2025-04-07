@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: {
@@ -11,7 +12,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
-    clean: true
+    clean: true,
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -24,32 +26,45 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          'postcss-loader'
+        ]
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource'
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name].[hash][ext]'
+        }
       }
     ]
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css'
+    }),
     new HtmlWebpackPlugin({
       template: './index.html',
-      filename: 'index.html'
+      filename: 'index.html',
+      chunks: ['main']
     }),
     new HtmlWebpackPlugin({
       template: './blog.html',
-      filename: 'blog.html'
+      filename: 'blog.html',
+      chunks: ['main']
     }),
     new HtmlWebpackPlugin({
       template: './educators.html',
-      filename: 'educators.html'
+      filename: 'educators.html',
+      chunks: ['main']
     }),
     new CopyWebpackPlugin({
       patterns: [
         { 
           from: 'sherlock-ai-background.jpg',
-          to: 'sherlock-ai-background.jpg'
+          to: 'images/sherlock-ai-background.jpg'
         },
         {
           from: '_headers',
@@ -70,5 +85,13 @@ module.exports = {
         }
       }
     }
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    compress: true,
+    port: 9000,
+    hot: true
   }
 }; 

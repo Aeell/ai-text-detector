@@ -6,6 +6,11 @@ import { UIController } from './ui-controller.js';
 import { Utils } from './utils.js';
 import { Debug } from './debug.js';
 
+// Import CSS
+import './main.css';
+import './dark-theme.css';
+import './responsive.css';
+
 // Register service worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -72,11 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
  * Initialize the application
  */
 function initializeApp() {
-  // Load CSS files
-  loadStylesheet('/css/main.css');
-  loadStylesheet('/css/dark-theme.css');
-  loadStylesheet('/css/responsive.css');
-  
   // Initialize debug mode if needed
   if (window.AIDetectorDebug) {
     window.AIDetectorDebug.init();
